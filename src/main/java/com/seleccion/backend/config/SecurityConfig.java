@@ -47,7 +47,7 @@ public class SecurityConfig {
                                                         "/api/ods/**",
                                                         "/api/relacion-mdea/**",
                                                         "/api/relacion-ods/**",
-                                                        "/api/dir/**",
+                                                        "/api/unidad/**",
                                                         "/api/procesosP/**").permitAll()
                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session
