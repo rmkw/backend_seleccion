@@ -1,4 +1,4 @@
-package com.seleccion.backend.controllers.usuario;
+package com.seleccion.backend.controllers.usuarios;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seleccion.backend.entities.usuario.usuario_enty;
-import com.seleccion.backend.services.usuario.usuario_service;
+import com.seleccion.backend.services.usuario.usuario_services;
 
 @RestController
 @RequestMapping("/api/usuarios")
 public class usuario_ctr {
     @Autowired
-    private usuario_service service;
+    private usuario_services service;
 
     @PostMapping("/registro")
     public ResponseEntity<Map<String, Object>> registrarUsuario(@RequestBody usuario_enty usuario){

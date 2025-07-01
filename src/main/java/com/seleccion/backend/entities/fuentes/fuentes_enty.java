@@ -1,6 +1,6 @@
 package com.seleccion.backend.entities.fuentes;
 
-import com.seleccion.backend.entities.procesos.procesos_enty;
+
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,7 +24,7 @@ public class fuentes_enty {
     private String url;
 
     @Column(name = "edicion")
-    private String edicion;
+    private Integer edicion;
 
     @Column(name = "comentario_s")
     private String comentarioS;
@@ -35,7 +35,7 @@ public class fuentes_enty {
     @Column(name = "responsable_actualizacion")
     private Integer responsableActualizacion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "acronimo", nullable = false)
-    private procesos_enty proceso;
+    @Column(name = "acronimo", nullable = false)
+    private String acronimo;
+
 }

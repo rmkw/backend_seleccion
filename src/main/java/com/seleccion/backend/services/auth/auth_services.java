@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Cookie;
 
 @Service
-public class auth_service {
+public class auth_services {
     @Autowired
     private AuthenticationManager authenticationManager;
 

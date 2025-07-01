@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seleccion.backend.entities.auth.login_dto;
 import com.seleccion.backend.entities.auth.usuario_dto;
 import com.seleccion.backend.entities.usuario.usuario_enty;
-import com.seleccion.backend.services.auth.auth_service;
+import com.seleccion.backend.services.auth.auth_services;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +31,7 @@ import jakarta.servlet.http.HttpSession;
 public class auth_ctr {
 
     @Autowired
-    private auth_service authService;
+    private auth_services authService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody login_dto loginDTO, HttpServletRequest request) {

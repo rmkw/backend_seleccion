@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.seleccion.backend.entities.unidades.unidades_enty;
-import com.seleccion.backend.services.unidades.unidades_service;
+import com.seleccion.backend.services.unidades.unidades_services;
 
 @RestController
 @RequestMapping("/api/unidad")
 public class unidades_ctr {
     @Autowired
-    private unidades_service service;
+    private unidades_services service;
 
     @GetMapping
     public List<unidades_enty> getAllDirecciones(){

@@ -10,7 +10,7 @@ import com.seleccion.backend.entities.unidades.unidades_enty;
 import com.seleccion.backend.repositories.unidades.unidades_repo;
 
 @Service
-public class unidades_service {
+public class unidades_services {
     
     @Autowired
     private unidades_repo repo;
