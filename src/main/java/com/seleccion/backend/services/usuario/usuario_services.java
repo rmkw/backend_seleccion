@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
-public class usuario_service {
+public class usuario_services {
     
     @Autowired
     private usuario_repo repo;

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.seleccion.backend.entities.procesos.procesos_enty;
-import com.seleccion.backend.services.procesos.procesos_service;
+import com.seleccion.backend.services.procesos.procesos_services;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class procesos_ctr {
     
-    private final procesos_service service;
+    private final procesos_services service;
 
     @GetMapping
     public List<procesos_enty> getTodosLosProcesos(){

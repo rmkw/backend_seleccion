@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class procesos_service {
+public class procesos_services {
 
     private final procesos_repo repo;
 
