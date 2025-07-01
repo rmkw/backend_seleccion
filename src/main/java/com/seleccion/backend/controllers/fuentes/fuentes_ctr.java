@@ -1,17 +1,16 @@
 package com.seleccion.backend.controllers.fuentes;
 
-import java.util.List;
-import java.util.Map;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 import com.seleccion.backend.entities.fuentes.fuentes_enty;
-import com.seleccion.backend.repositories.fuentes.fuentes_repo;
+
 import com.seleccion.backend.services.fuentes.fuentes_services;
 
 public class fuentes_ctr {
