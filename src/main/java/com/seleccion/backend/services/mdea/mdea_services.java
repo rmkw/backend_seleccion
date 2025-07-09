@@ -69,5 +69,9 @@ public class mdea_services {
     public List<mdea_enty> getByIdA(String idA) {
         return repo_mdea.findByIdA(idA);
     }
+
+    public void deleteById(Integer idUnique) {
+        repo_mdea.deleteById(idUnique);
+    }
     
 }

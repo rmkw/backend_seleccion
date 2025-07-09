@@ -3,6 +3,7 @@ package com.seleccion.backend.controllers.mdea;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -92,6 +93,11 @@ public class mdea_ctr {
     @GetMapping("/{idA}")
     public List<mdea_enty> getPorIdVariableUnique(@PathVariable String idA) {
         return service.getByIdA(idA);
+    }
+
+    @DeleteMapping("/{id}")
+    public void eliminarRelacion(@PathVariable Integer id) {
+        service.deleteById(id);
     }
 
 }

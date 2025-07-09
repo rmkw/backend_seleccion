@@ -20,7 +20,7 @@ import com.seleccion.backend.services.procesos.procesos_services;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/procesosP")
+@RequestMapping("/api/procesos")
 @RequiredArgsConstructor
 public class procesos_ctr {
     

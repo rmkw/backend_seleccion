@@ -40,7 +40,7 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(authz -> authz
                                                 .requestMatchers( 
                                                         "/api/auth/**",
-                                                        "/api/ppeco/**",
+                                                        "/api/pertinencia/**",
                                                         "/api/fuentes/**",
                                                         "/api/variables/**",
                                                         "/api/mdea/**",
@@ -48,7 +48,7 @@ public class SecurityConfig {
                                                         "/api/relacion-mdea/**",
                                                         "/api/relacion-ods/**",
                                                         "/api/unidad/**",
-                                                        "/api/procesosP/**").permitAll()
+                                                        "/api/procesos/**").permitAll()
                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
