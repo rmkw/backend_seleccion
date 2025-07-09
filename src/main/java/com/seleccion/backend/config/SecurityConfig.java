@@ -45,8 +45,7 @@ public class SecurityConfig {
                                                         "/api/variables/**",
                                                         "/api/mdea/**",
                                                         "/api/ods/**",
-                                                        "/api/relacion-mdea/**",
-                                                        "/api/relacion-ods/**",
+                                                        
                                                         "/api/unidad/**",
                                                         "/api/procesos/**").permitAll()
                                                 .anyRequest().authenticated())
