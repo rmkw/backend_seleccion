@@ -87,7 +87,7 @@ public class SecurityConfig {
                 CorsConfiguration configuration = new CorsConfiguration();
 
                 // Permitir solicitudes desde Angular y cualquier IP en la red 10.109.1.X:4200
-                configuration.setAllowedOriginPatterns(List.of("http://10.109.1.*:4200", "http://localhost:4200", "http://192.168.0.*:4200"));
+                configuration.setAllowedOriginPatterns(List.of("http://10.109.1.*:4200", "http://localhost:4200", "http://192.168.0.8:4200"));
 
                 // Permitir todos los métodos HTTP
                 configuration.setAllowedMethods(List.of("*"));

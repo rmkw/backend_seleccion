@@ -13,4 +13,5 @@ public interface ods_repo extends JpaRepository<ods_enty, Integer> {
 
     List<ods_enty> findByIdA(String idA);
 
+    List<ods_enty> findByIdS(String idS);
 }

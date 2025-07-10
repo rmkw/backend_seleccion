@@ -11,4 +11,6 @@ import com.seleccion.backend.entities.mdea.produccion.mdea_enty;
 public interface mdea_repo extends JpaRepository<mdea_enty, Integer> {
     List<mdea_enty> findByIdA(String idA);
 
+    List<mdea_enty> findByIdS(String idS);
+
 }
