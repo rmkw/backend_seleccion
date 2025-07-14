@@ -2,6 +2,7 @@ package com.seleccion.backend.entities.auth;
 
 public class login_dto {
     private String username;
+    
     private String password;
 
     // Getters y Setters

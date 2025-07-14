@@ -11,5 +11,6 @@ import java.util.Set;
 public class usuario_dto {
     private Long id;
     private String nombre;
+    private String aka;
     private Set<String> roles;
 }

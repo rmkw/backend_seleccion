@@ -1,6 +1,7 @@
 package com.seleccion.backend.controllers.variables;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,12 @@ public class variables_ctr {
     @GetMapping("/por-id/{idS}")
     public List<variables_relacion_dto> getByIdSWithRelations(@PathVariable String idS) {
         return service.getWithRelationsByIdS(idS);
+    }
+
+    @DeleteMapping("/delete-full/{idA}")
+    public ResponseEntity<Map<String, Object>> deleteVariableCascade(@PathVariable String idA) {
+        Map<String, Object> result = service.deleteVariableAndCascade(idA);
+        return ResponseEntity.ok(result);
     }
 
     

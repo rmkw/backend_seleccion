@@ -79,6 +79,11 @@ public class fuentes_ctr {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @DeleteMapping("/{id}/delete-full")
+    public ResponseEntity<Map<String, Object>> deleteFuenteCascade(@PathVariable Integer id) {
+        Map<String, Object> result = service.deleteFuenteAndCascade(id);
+        return ResponseEntity.ok(result);
+    }
 
     
 }

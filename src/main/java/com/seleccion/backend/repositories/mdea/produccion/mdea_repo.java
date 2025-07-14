@@ -13,4 +13,6 @@ public interface mdea_repo extends JpaRepository<mdea_enty, Integer> {
 
     List<mdea_enty> findByIdS(String idS);
 
+    void deleteByIdA(String idA);
+
 }

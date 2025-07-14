@@ -11,5 +11,7 @@ import com.seleccion.backend.entities.pertinencias.pertinencia_enty;
 public interface pertinencia_repo extends JpaRepository<pertinencia_enty, Integer>{
     Optional<pertinencia_enty> findByIdA(String idA);
 
+    void deleteByIdA(String idA);
+
     
 }

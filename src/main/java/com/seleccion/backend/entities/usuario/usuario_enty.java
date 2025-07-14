@@ -16,6 +16,7 @@ public class usuario_enty {
     private Long id;
 
     private String nombre;
+    private String aka;
     private String contrasena;
 
     @ElementCollection(fetch = FetchType.EAGER) // Guarda los roles como una colección

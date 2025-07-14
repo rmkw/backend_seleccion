@@ -1,6 +1,9 @@
 package com.seleccion.backend.services.variables;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
@@ -19,6 +22,7 @@ import com.seleccion.backend.repositories.ods.produccion.ods_repo;
 import com.seleccion.backend.repositories.pertinencias.pertinencia_repo;
 import com.seleccion.backend.repositories.variables.variables_repo;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -84,6 +88,28 @@ public class variables_services {
         return dto;
     }).collect(Collectors.toList());
 }
+
+    @Transactional
+    public Map<String, Object> deleteVariableAndCascade(String idA) {
+        Optional<variables_enty> optionalVar = repository.findById(idA);
+
+        if (optionalVar.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable no encontrada");
+        }
+
+        // Eliminar relaciones por idA
+        pertinenciaRepository.deleteByIdA(idA);
+        odsRepository.deleteByIdA(idA);
+        mdeaRepository.deleteByIdA(idA);
+
+        // Eliminar variable
+        repository.deleteById(idA);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Variable y relaciones eliminadas correctamente");
+        return response;
+    }
+
 
     
 

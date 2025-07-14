@@ -27,6 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         // Retorna un objeto User (que es una implementación de UserDetails)
         return User.builder()
                 .username(usuario.getNombre())
+                 // Si tienes un campo "aka" en tu entidad, puedes usarlo aquí
                 .password(usuario.getContrasena()) // Asegúrate de que la contraseña esté cifrada en la base de datos
                 .roles(usuario.getRoles().toArray(new String[0])) // Asignar el rol al usuario
                 .build();

@@ -1,5 +1,6 @@
 package com.seleccion.backend.services.fuentes;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -10,13 +11,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.seleccion.backend.entities.fuentes.fuentes_enty;
+import com.seleccion.backend.entities.variables.variables_enty;
 import com.seleccion.backend.repositories.fuentes.fuentes_repo;
+import com.seleccion.backend.repositories.mdea.produccion.mdea_repo;
+import com.seleccion.backend.repositories.ods.produccion.ods_repo;
+import com.seleccion.backend.repositories.pertinencias.pertinencia_repo;
+import com.seleccion.backend.repositories.variables.variables_repo;
 
 import jakarta.transaction.Transactional;
 @Service
 public class fuentes_services {
     @Autowired
     private fuentes_repo repo;
+
+
+    @Autowired
+    private variables_repo variableRepo;
+
+    @Autowired
+    private pertinencia_repo pertinenciaRepo;
+
+    @Autowired
+    private mdea_repo mdeaRepo;
+
+    @Autowired
+    private ods_repo odsRepo;
 
 
     public fuentes_enty create(fuentes_enty fuente) {
@@ -61,6 +80,39 @@ public class fuentes_services {
 
         return repo.save(existente);
     }
+
+    @Transactional
+    public Map<String, Object> deleteFuenteAndCascade(Integer idFuente) {
+        Optional<fuentes_enty> optionalRecord = repo.findById(idFuente);
+
+        if (optionalRecord.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fuente no encontrada");
+        }
+
+        // Obtener las variables asociadas a esta fuente
+        List<variables_enty> variables = variableRepo.findByIdFuente(idFuente);
+
+        for (variables_enty var : variables) {
+            String idA = var.getIdA();
+
+            // Eliminar relaciones por idA
+            pertinenciaRepo.deleteByIdA(idA);
+            odsRepo.deleteByIdA(idA);
+            mdeaRepo.deleteByIdA(idA);
+
+            // Eliminar variable
+            variableRepo.deleteById(idA);
+        }
+
+        // Eliminar la fuente
+        repo.deleteById(idFuente);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Fuente y datos relacionados eliminados correctamente");
+        response.put("variablesEliminadas", variables.size());
+        return response;
+    }
+
     
 
    

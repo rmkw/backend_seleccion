@@ -88,7 +88,7 @@ public class auth_ctr {
         }
 
         response.put("authenticated", true);
-        response.put("user", new usuario_dto(usuario.getId(), usuario.getNombre(), usuario.getRoles()));
+        response.put("user", new usuario_dto(usuario.getId(), usuario.getNombre(), usuario.getAka(), usuario.getRoles()));
 
         return ResponseEntity.ok(response);
     }
