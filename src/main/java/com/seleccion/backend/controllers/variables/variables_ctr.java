@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,6 +52,17 @@ public class variables_ctr {
     public ResponseEntity<Map<String, Object>> deleteVariableCascade(@PathVariable String idA) {
         Map<String, Object> result = service.deleteVariableAndCascade(idA);
         return ResponseEntity.ok(result);
+    }
+
+    @PutMapping("/edit/{idA}")
+    public ResponseEntity<Map<String, Object>> editarVariable(@PathVariable String idA, @RequestBody variables_relacion_dto dto) {
+        Map<String, Object> result = service.editarVariable(idA, dto);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/por-ida/{idA}")
+    public variables_relacion_dto getByIdAWithRelations(@PathVariable String idA) {
+        return service.getWithRelationsByIdA(idA);
     }
 
     

@@ -29,5 +29,5 @@ public class variables_relacion_dto {
 
     private List<mdea_enty> mdeas;
     private List<ods_enty> odsList;
-    private List<pertinencia_enty> pertinencia;
+    private pertinencia_enty pertinencia;
 }
