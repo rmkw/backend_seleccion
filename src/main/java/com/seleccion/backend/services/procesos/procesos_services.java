@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.seleccion.backend.entities.procesos.procesos_dto;
 import com.seleccion.backend.entities.procesos.procesos_enty;
 import com.seleccion.backend.repositories.procesos.procesos_repo;
 
@@ -19,12 +20,14 @@ public class procesos_services {
         return repo.findAll();
     }
 
-    public List<procesos_enty> obtenerPorunidad(String unidad) {
-        return repo.findByunidadIgnoreCaseOrderByProcesoAsc(unidad);
+    public List<procesos_dto> obtenerPorunidad(String unidad) {
+        return repo.findProcesosConConteoVariablesByUnidad(unidad);
     }
 
     public void actualizarComentario(String acronimo, String comentario) {
         repo.actualizarComentarioPorAcronimo(acronimo, comentario);
     }
+
+    
     
 }

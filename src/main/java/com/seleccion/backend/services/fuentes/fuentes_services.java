@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.seleccion.backend.entities.fuentes.fuentes_dto;
 import com.seleccion.backend.entities.fuentes.fuentes_enty;
 import com.seleccion.backend.entities.variables.variables_enty;
 import com.seleccion.backend.repositories.fuentes.fuentes_repo;
@@ -42,9 +43,26 @@ public class fuentes_services {
         return repo.save(fuente);
     }
 
-    public List<fuentes_enty> getByAcronimoAndResponsable(String acronimo, Integer responsableRegister) {
-        return repo.findByAcronimoAndResponsableRegisterOrderByEdicionDesc(acronimo, responsableRegister);
-    }
+    public List<fuentes_dto> getByAcronimoAndResponsable(String acronimo, Integer responsableRegister) {
+    List<fuentes_enty> fuentes = repo.findByAcronimoAndResponsableRegisterOrderByEdicionDesc(acronimo, responsableRegister);
+
+    return fuentes.stream().map(f -> {
+        Long totalVariables = variableRepo.countByIdFuente(f.getIdFuente());
+
+        return new fuentes_dto(
+                f.getIdFuente(),
+                f.getAcronimo(),
+                f.getFuente(),
+                f.getUrl(),
+                f.getEdicion(),
+                f.getComentarioS(),
+                f.getResponsableRegister(),
+                f.getResponsableActualizacion(),
+                totalVariables
+        );
+    }).toList();
+}
+
 
     @Transactional
     public Map<String, Object> deleteFuenteById(Integer idFuente) {

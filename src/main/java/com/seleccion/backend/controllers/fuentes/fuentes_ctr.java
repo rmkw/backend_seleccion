@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.seleccion.backend.entities.fuentes.fuentes_dto;
 import com.seleccion.backend.entities.fuentes.fuentes_enty;
 import com.seleccion.backend.repositories.fuentes.fuentes_repo;
 import com.seleccion.backend.services.fuentes.fuentes_services;
@@ -43,9 +43,14 @@ public class fuentes_ctr {
             @RequestParam String acronimo,
             @RequestParam Integer responsableRegister) {
 
-        List<fuentes_enty> result = service.getByAcronimoAndResponsable(acronimo, responsableRegister);
-        return ResponseEntity.ok(result);
+        List<fuentes_dto> result = service.getByAcronimoAndResponsable(acronimo, responsableRegister);
+
+        return ResponseEntity.ok(Map.of(
+            "message", "Registros encontrados",
+            "fuentes", result
+        ));
     }
+
 
 
     @PostMapping

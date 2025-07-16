@@ -43,6 +43,12 @@ public class variables_services {
     
 
     public variables_enty crearVariable(variables_enty variable) {
+
+        if (repository.existsByIdA(variable.getIdA())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Ya existe una relación de pertinencia registrada para esta variable");
+        }        
         
         if (repository.existsByIdSAndIdFuente(variable.getIdS(), variable.getIdFuente())) {
             throw new ResponseStatusException(

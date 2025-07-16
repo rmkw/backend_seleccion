@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.seleccion.backend.entities.procesos.procesos_dto;
 import com.seleccion.backend.entities.procesos.procesos_enty;
 import com.seleccion.backend.services.procesos.procesos_services;
 
@@ -32,7 +33,7 @@ public class procesos_ctr {
     }
 
     @GetMapping("/buscar")
-    public List<procesos_enty> buscarPorunidad(@RequestParam(value = "unidad_administrativa", required = false) String unidad){
+    public List<procesos_dto> buscarPorunidad(@RequestParam(value = "unidad_administrativa", required = false) String unidad){
         if (unidad == null || unidad.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Falta el parámetro unidad_administrativa");
         }
@@ -62,6 +63,9 @@ public class procesos_ctr {
             this.message = message;
         }
     }    
+
+
+    
 
 
 }
