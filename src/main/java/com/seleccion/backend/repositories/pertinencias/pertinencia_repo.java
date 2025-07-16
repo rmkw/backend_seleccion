@@ -14,4 +14,6 @@ public interface pertinencia_repo extends JpaRepository<pertinencia_enty, Intege
     void deleteByIdA(String idA);
 
     
+
+    
 }
