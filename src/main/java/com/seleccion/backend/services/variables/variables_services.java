@@ -67,7 +67,7 @@ public class variables_services {
         }
     }
 
-    public List<variables_enty> getByResponsableAndFuente(Integer responsableRegister, Integer idFuente) {
+    public List<variables_enty> getByResponsableAndFuente(Integer responsableRegister, String idFuente) {
         return repository.findByResponsableRegisterAndIdFuenteOrderByIdA(responsableRegister,
                 idFuente);
     }

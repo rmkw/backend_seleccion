@@ -19,7 +19,7 @@ public class variables_enty {
     private String idS;
 
     @Column(name = "id_fuente", nullable = false)
-    private Integer idFuente;
+    private String idFuente;
 
     @Column(name = "acronimo", nullable = false)
     private String acronimo;

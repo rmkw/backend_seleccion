@@ -33,7 +33,7 @@ public class variables_ctr {
     @GetMapping("/filtered/{responsableRegister}/{idFuente}")
     public List<variables_enty> getByResponsableAndFuente(
             @PathVariable Integer responsableRegister,
-            @PathVariable Integer idFuente) {
+            @PathVariable String idFuente) {
 
         return service.getByResponsableAndFuente(responsableRegister, idFuente);
     }

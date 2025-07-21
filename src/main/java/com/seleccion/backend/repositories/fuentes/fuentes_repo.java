@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.seleccion.backend.entities.fuentes.fuentes_enty;
 
-public interface fuentes_repo extends JpaRepository<fuentes_enty, Integer> {
+public interface fuentes_repo extends JpaRepository<fuentes_enty, String> {
 
     List<fuentes_enty> findByAcronimoAndResponsableRegister(String acronimo, Integer responsableRegister);
 

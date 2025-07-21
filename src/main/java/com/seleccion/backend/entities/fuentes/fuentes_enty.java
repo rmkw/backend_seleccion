@@ -13,9 +13,8 @@ import lombok.*;
 @Builder
 public class fuentes_enty {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_fuente")
-    private Integer idFuente;
+    private String idFuente;
 
     @Column(name = "fuente", nullable = false)
     private String fuente;
@@ -24,7 +23,7 @@ public class fuentes_enty {
     private String url;
 
     @Column(name = "edicion")
-    private Integer edicion;
+    private String edicion;
 
     @Column(name = "comentario_s")
     private String comentarioS;

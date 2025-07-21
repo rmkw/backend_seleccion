@@ -16,7 +16,7 @@ import java.util.List;
 public class variables_relacion_dto {
     private String idA;
     private String idS;
-    private Integer idFuente;
+    private String idFuente;
     private String acronimo;
     private String nombre;
     private String definicion;

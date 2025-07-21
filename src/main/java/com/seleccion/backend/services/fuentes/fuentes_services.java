@@ -40,6 +40,7 @@ public class fuentes_services {
 
 
     public fuentes_enty create(fuentes_enty fuente) {
+        
         return repo.save(fuente);
     }
 
@@ -65,7 +66,7 @@ public class fuentes_services {
 
 
     @Transactional
-    public Map<String, Object> deleteFuenteById(Integer idFuente) {
+    public Map<String, Object> deleteFuenteById(String idFuente) {
         Optional<fuentes_enty> optional = repo.findById(idFuente);
 
         if (optional.isEmpty()) {
@@ -79,7 +80,7 @@ public class fuentes_services {
                 "id", idFuente);
     }
 
-    public fuentes_enty update(Integer id, fuentes_enty nuevaFuente) {
+    public fuentes_enty update(String id, fuentes_enty nuevaFuente) {
         Optional<fuentes_enty> optional = repo.findById(id);
 
         if (optional.isEmpty()) {
@@ -100,7 +101,7 @@ public class fuentes_services {
     }
 
     @Transactional
-    public Map<String, Object> deleteFuenteAndCascade(Integer idFuente) {
+    public Map<String, Object> deleteFuenteAndCascade(String idFuente) {
         Optional<fuentes_enty> optionalRecord = repo.findById(idFuente);
 
         if (optionalRecord.isEmpty()) {

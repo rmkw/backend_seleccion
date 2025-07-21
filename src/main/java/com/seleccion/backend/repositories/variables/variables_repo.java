@@ -10,22 +10,22 @@ import org.springframework.lang.NonNull;
 import com.seleccion.backend.entities.variables.variables_enty;
 
 public interface variables_repo extends JpaRepository<variables_enty, String>{
-    boolean existsByIdSAndIdFuente(String idS, Integer idFuente);
+    boolean existsByIdSAndIdFuente(String idS, String idFuente);
 
     boolean existsByIdA(String idA);
 
-    List<variables_enty> findByResponsableRegisterAndIdFuenteOrderByIdA(Integer responsableRegister, Integer idFuente);
+    List<variables_enty> findByResponsableRegisterAndIdFuenteOrderByIdA(Integer responsableRegister, String idFuente);
 
     List<variables_enty> findByIdA(String idA);
 
     List<variables_enty> findByIdS(String idS);
 
-    List<variables_enty> findByIdFuente(Integer idFuente);
+    List<variables_enty> findByIdFuente(String idFuente);
 
     void deleteById(@NonNull String idA);
 
 
     @Query("SELECT COUNT(v) FROM variables_enty v WHERE v.idFuente = :idFuente")
-    Long countByIdFuente(@Param("idFuente") Integer idFuente);
+    Long countByIdFuente(@Param("idFuente") String idFuente);
 
 }

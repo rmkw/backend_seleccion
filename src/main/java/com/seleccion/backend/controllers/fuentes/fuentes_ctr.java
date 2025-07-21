@@ -60,7 +60,7 @@ public class fuentes_ctr {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteFuente(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteFuente(@PathVariable String id) {
         Map<String, Object> result = service.deleteFuenteById(id);
         return ResponseEntity.ok(result);
     }
@@ -69,7 +69,7 @@ public class fuentes_ctr {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<fuentes_enty> update(@PathVariable Integer id, @RequestBody fuentes_enty datos) {
+    public ResponseEntity<fuentes_enty> update(@PathVariable String id, @RequestBody fuentes_enty datos) {
         return repository.findById(id)
                 .map(actual -> {
                     actual.setFuente(datos.getFuente());
@@ -85,7 +85,7 @@ public class fuentes_ctr {
     }
 
     @DeleteMapping("/{id}/delete-full")
-    public ResponseEntity<Map<String, Object>> deleteFuenteCascade(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> deleteFuenteCascade(@PathVariable String id) {
         Map<String, Object> result = service.deleteFuenteAndCascade(id);
         return ResponseEntity.ok(result);
     }
