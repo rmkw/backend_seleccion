@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,10 +55,18 @@ public class fuentes_ctr {
 
 
     @PostMapping
-    public ResponseEntity<fuentes_enty> create(@RequestBody fuentes_enty fuente) {
-        fuentes_enty creada = service.create(fuente);
-        return ResponseEntity.ok(creada);
+    public ResponseEntity<?> create(@RequestBody fuentes_enty fuente) {
+        try {
+            fuentes_enty creada = service.create(fuente);
+            return ResponseEntity.ok(creada);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error inesperado al registrar la fuente.");
+        }
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFuente(@PathVariable String id) {

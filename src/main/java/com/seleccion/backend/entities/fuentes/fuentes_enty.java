@@ -19,7 +19,7 @@ public class fuentes_enty {
     @Column(name = "fuente", nullable = false)
     private String fuente;
 
-    @Column(name = "url")
+    @Column(name = "url", unique = true)
     private String url;
 
     @Column(name = "edicion")

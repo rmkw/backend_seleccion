@@ -40,9 +40,12 @@ public class fuentes_services {
 
 
     public fuentes_enty create(fuentes_enty fuente) {
-        
+        if (repo.existsById(fuente.getIdFuente())) {
+            throw new IllegalArgumentException("Ya existe una fuente con ese ID");
+        }
+
         return repo.save(fuente);
-    }
+    }    
 
     public List<fuentes_dto> getByAcronimoAndResponsable(String acronimo, Integer responsableRegister) {
     List<fuentes_enty> fuentes = repo.findByAcronimoAndResponsableRegisterOrderByEdicionDesc(acronimo, responsableRegister);
