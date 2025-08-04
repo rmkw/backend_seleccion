@@ -2,6 +2,8 @@ package com.seleccion.backend.repositories.variables;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,5 +29,9 @@ public interface variables_repo extends JpaRepository<variables_enty, String>{
 
     @Query("SELECT COUNT(v) FROM variables_enty v WHERE v.idFuente = :idFuente")
     Long countByIdFuente(@Param("idFuente") String idFuente);
+
+
+    Page<variables_enty> findByResponsableRegisterAndIdFuente(Integer responsableRegister, String idFuente,
+            Pageable pageable);
 
 }
