@@ -45,6 +45,7 @@ public class SecurityConfig {
                                                         "/api/variables/**",
                                                         "/api/mdea/**",
                                                         "/api/ods/**",
+                                                        "/api/procesos-locales/**",
                                                         
                                                         "/api/unidad/**",
                                                         "/api/procesos/**").permitAll()

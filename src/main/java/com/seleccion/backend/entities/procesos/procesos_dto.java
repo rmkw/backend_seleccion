@@ -18,6 +18,7 @@ public class procesos_dto {
     private String periodicidad;
     private String iin;
     private String estatus;
+    private Boolean ipi;
     private String comentarioS;
     private String comentarioA;
     private Long totalVariables;

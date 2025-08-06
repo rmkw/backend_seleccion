@@ -34,6 +34,7 @@ public interface procesos_repo extends JpaRepository<procesos_enty, String>  {
                     p.periodicidad,
                     p.iin,
                     p.estatus,
+                    p.ipi,
                     p.comentarioS,
                     p.comentarioA,
                     (SELECT COUNT(v) FROM variables_enty v WHERE v.acronimo = p.acronimo)
@@ -43,5 +44,10 @@ public interface procesos_repo extends JpaRepository<procesos_enty, String>  {
                 ORDER BY p.proceso ASC
             """)
     List<procesos_dto> findProcesosConConteoVariablesByUnidad(@Param("unidad") String unidad);
+
+
+
+
+    
 
 } 

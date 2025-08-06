@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +38,7 @@ public class procesos_ctr {
         if (unidad == null || unidad.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Falta el parámetro unidad_administrativa");
         }
-        return service.obtenerPorunidad(unidad);
+        return service.obtenerTodosPorUnidad(unidad);
     }
 
     @PutMapping("/comentario/{acronimo}")
@@ -63,6 +64,13 @@ public class procesos_ctr {
             this.message = message;
         }
     }    
+
+
+    @PostMapping("/registrar")
+    public ResponseEntity<?> registrarProceso(@RequestBody procesos_enty nuevoProceso) {
+        return service.registrarProceso(nuevoProceso);
+    }
+
 
 
     
