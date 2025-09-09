@@ -14,6 +14,9 @@ public class cat_meta_enty {
     @Column(name = "id_meta")
     private String idMeta;
 
+    @Column(name = "unique_id")
+    private String uniqueId;
+
     @Column(name = "id_objetivo", nullable = false)
     private Integer idObjetivo;
 

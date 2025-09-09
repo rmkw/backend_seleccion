@@ -15,4 +15,12 @@ public interface mdea_repo extends JpaRepository<mdea_enty, Integer> {
 
     void deleteByIdA(String idA);
 
+    boolean existsByIdAAndComponenteAndSubcomponenteAndTemaAndEstadistica1AndEstadistica2(
+            String idA,
+            String componente,
+            String subcomponente,
+            String tema,
+            String estadistica1,
+            String estadistica2);
+
 }

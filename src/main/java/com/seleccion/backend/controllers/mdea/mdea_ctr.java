@@ -1,6 +1,8 @@
 package com.seleccion.backend.controllers.mdea;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -86,9 +88,17 @@ public class mdea_ctr {
     }
 
     @PostMapping
-    public mdea_enty crearRelacion(@RequestBody mdea_enty relation) {
-        return service.save(relation);
+    public ResponseEntity<?> crearRelacion(@RequestBody mdea_enty relation) {
+        try {
+            mdea_enty nueva = service.save(relation);
+            return ResponseEntity.ok(nueva);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
     }
+
 
     @GetMapping("/{idA}")
     public List<mdea_enty> getPorIdVariableUnique(@PathVariable String idA) {

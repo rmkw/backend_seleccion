@@ -77,8 +77,11 @@ public class fuentes_ctr {
     
 
 
-    @PutMapping("/{id}")
-    public ResponseEntity<fuentes_enty> update(@PathVariable String id, @RequestBody fuentes_enty datos) {
+    @PutMapping("/update")
+    public ResponseEntity<fuentes_enty> update(
+            @RequestParam("idFuente") String id,
+            @RequestBody fuentes_enty datos) {
+
         return repository.findById(id)
                 .map(actual -> {
                     actual.setFuente(datos.getFuente());
@@ -87,15 +90,16 @@ public class fuentes_ctr {
                     actual.setComentarioS(datos.getComentarioS());
                     actual.setResponsableActualizacion(datos.getResponsableActualizacion());
 
-                    // 👇 NO tocar responsableRegister para evitar errores de integridad
+                    // NO tocar responsableRegister
                     return ResponseEntity.ok(repository.save(actual));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}/delete-full")
-    public ResponseEntity<Map<String, Object>> deleteFuenteCascade(@PathVariable String id) {
-        Map<String, Object> result = service.deleteFuenteAndCascade(id);
+    @DeleteMapping("/delete-full")
+    public ResponseEntity<?> deleteFuenteCascade(@RequestParam("idFuente") String idFuente) {
+         System.out.println("Llega ID a backend: " + idFuente);
+        Map<String, Object> result = service.deleteFuenteAndCascade(idFuente);
         return ResponseEntity.ok(result);
     }
 

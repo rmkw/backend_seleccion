@@ -1,8 +1,11 @@
 package com.seleccion.backend.controllers.ods;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,9 +62,17 @@ public class ods_ctr {
 
 
     @PostMapping
-    public ods_enty crearRelacion(@RequestBody ods_enty relacion) {
-        return service.save(relacion);
+    public ResponseEntity<?> crearRelacion(@RequestBody ods_enty relacion) {
+        try {
+            ods_enty nueva = service.save(relacion);
+            return ResponseEntity.ok(nueva);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
     }
+
 
     @GetMapping("/{IdA}")
     public List<ods_enty> obtenerPorIdA(@PathVariable String IdA) {

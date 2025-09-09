@@ -63,8 +63,20 @@ public class mdea_services {
     }
 
     public mdea_enty save(mdea_enty relation) {
+        boolean exists = repo_mdea.existsByIdAAndComponenteAndSubcomponenteAndTemaAndEstadistica1AndEstadistica2(
+                relation.getIdA(),
+                relation.getComponente(),
+                relation.getSubcomponente(),
+                relation.getTema(),
+                relation.getEstadistica1(),
+                relation.getEstadistica2());
+
+        if (exists) {
+            throw new IllegalArgumentException("Ya existe una relación con estos valores para esta variable.");
+        }
+
         return repo_mdea.save(relation);
-    }
+    }    
 
     public List<mdea_enty> getByIdA(String idA) {
         return repo_mdea.findByIdA(idA);

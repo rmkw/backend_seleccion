@@ -16,4 +16,11 @@ public interface ods_repo extends JpaRepository<ods_enty, Integer> {
     List<ods_enty> findByIdS(String idS);
 
     void deleteByIdA(String idA);
+
+    boolean existsByIdAAndObjetivoAndMetaAndIndicador(
+            String idA,
+            String objetivo,
+            String meta,
+            String indicador);
+
 }

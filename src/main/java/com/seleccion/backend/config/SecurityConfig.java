@@ -83,23 +83,43 @@ public class SecurityConfig {
                 return new BCryptPasswordEncoder(); // Encriptar contraseñas con BCrypt
         }
 
+        // @Bean
+        // public CorsConfigurationSource corsConfigurationSource() {
+        //         CorsConfiguration configuration = new CorsConfiguration();
+
+        //         // Permitir solicitudes desde Angular y cualquier IP en la red 10.109.1.X:4200
+        //         configuration.setAllowedOrigins(List.of(
+        //                         "http://10.109.1.13:4200", // IP exacta de tu frontend
+        //                         "http://localhost:4200",
+        //                         "http://192.168.0.8:4200"));
+
+        //         // Permitir todos los métodos HTTP
+        //         configuration.setAllowedMethods(List.of("*"));
+
+        //         // Permitir todas las cabeceras
+        //         configuration.setAllowedHeaders(List.of("*"));
+
+        //         // Permitir el uso de cookies (JSESSIONID)
+        //         configuration.setAllowCredentials(true);
+
+        //         // Aplicar esta configuración a todas las rutas
+        //         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        //         source.registerCorsConfiguration("/**", configuration);
+
+        //         return source;
+        // }
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
 
-                // Permitir solicitudes desde Angular y cualquier IP en la red 10.109.1.X:4200
-                configuration.setAllowedOriginPatterns(List.of("http://10.109.1.*:4200", "http://localhost:4200", "http://192.168.0.8:4200"));
-
-                // Permitir todos los métodos HTTP
-                configuration.setAllowedMethods(List.of("*"));
-
-                // Permitir todas las cabeceras
-                configuration.setAllowedHeaders(List.of("*"));
-
-                // Permitir el uso de cookies (JSESSIONID)
+                configuration.addAllowedOriginPattern("*");
                 configuration.setAllowCredentials(true);
 
-                // Aplicar esta configuración a todas las rutas
+                configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // ✅ incluye
+                                                                                                     // OPTIONS
+                configuration.setAllowedHeaders(List.of("*"));
+                configuration.setMaxAge(3600L); // cache preflight
+
                 UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
                 source.registerCorsConfiguration("/**", configuration);
 

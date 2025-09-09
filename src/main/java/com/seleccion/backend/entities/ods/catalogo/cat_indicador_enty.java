@@ -14,6 +14,9 @@ public class cat_indicador_enty {
     @Column(name = "id_indicador")
     private Integer idIndicador;
 
+    @Column(name = "unique_id")
+    private String uniqueId;
+
     @Column(name = "id_objetivo", nullable = false)
     private Integer idObjetivo;
 
