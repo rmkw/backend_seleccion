@@ -1,6 +1,8 @@
 package com.seleccion.backend.entities.variables;
 
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -47,4 +49,16 @@ public class variables_enty {
 
     @Column(name = "responsable_actualizacion")
     private Integer responsableActualizacion;
+
+    @Column(name = "prioridad")
+    private Short prioridad;
+
+    @Column(name = "revisada", nullable = false)
+    private Boolean revisada;
+
+    @Column(name = "fecha_revision")
+    private LocalDateTime fechaRevision;
+
+    @Column(name = "responsable_revision")
+    private Integer responsableRevision;
 }

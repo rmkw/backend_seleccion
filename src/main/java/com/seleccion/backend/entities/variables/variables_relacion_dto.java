@@ -7,6 +7,7 @@ import com.seleccion.backend.entities.pertinencias.pertinencia_enty;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -27,7 +28,14 @@ public class variables_relacion_dto {
     private Integer responsableRegister;
     private Integer responsableActualizacion;
 
+    private Short prioridad;
+    private Boolean revisada;
+    private LocalDateTime fechaRevision;
+    private Integer responsableRevision;
+
     private List<mdea_enty> mdeas;
     private List<ods_enty> odsList;
+
+    
     private pertinencia_enty pertinencia;
 }

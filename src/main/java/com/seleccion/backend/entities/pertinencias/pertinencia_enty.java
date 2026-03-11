@@ -18,6 +18,9 @@ public class pertinencia_enty {
     @Column(name = "id_a", nullable = false)
     private String idA;
 
+    @Column(name = "id_s", nullable = false)
+    private String idS;
+
     @Column(name = "pertinencia", nullable = false)
     private String pertinencia;
 

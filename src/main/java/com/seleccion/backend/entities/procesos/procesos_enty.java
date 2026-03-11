@@ -44,9 +44,9 @@ public class procesos_enty {
     @Column(name = "ipi")
     private Boolean ipi;
 
-    @Column(name = "comentario_s")
-    private String comentarioS;
+    @Column(name = "inicio")
+    private String inicio;
 
-    @Column(name = "comentario_a")
-    private String comentarioA;
+    @Column(name = "conclusion")
+    private String conclusion;
 }

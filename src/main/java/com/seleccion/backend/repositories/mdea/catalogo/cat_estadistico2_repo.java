@@ -1,6 +1,7 @@
 package com.seleccion.backend.repositories.mdea.catalogo;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,5 +14,7 @@ public interface cat_estadistico2_repo extends JpaRepository<cat_estadistico2_en
             Integer idSubcomponente,
             Integer idTema,
             String idEstadistico1);
+            
+    Optional<cat_estadistico2_enty> findByUniqueId(String uniqueId);
 
 }

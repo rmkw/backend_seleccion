@@ -46,8 +46,8 @@ public class SecurityConfig {
                                                         "/api/mdea/**",
                                                         "/api/ods/**",
                                                         "/api/procesos-locales/**",
-                                                        
-                                                        "/api/unidad/**",
+                                                                "/api/usuarios/**",
+                                                                        "/api/unidad/**",
                                                         "/api/procesos/**").permitAll()
                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session

@@ -24,6 +24,8 @@ public interface variables_repo extends JpaRepository<variables_enty, String>{
 
     List<variables_enty> findByIdFuente(String idFuente);
 
+    List<variables_enty> findByIdFuenteInOrderByIdFuenteDescIdAAsc(List<String> idFuentes);
+
     void deleteById(@NonNull String idA);
 
 
@@ -33,5 +35,7 @@ public interface variables_repo extends JpaRepository<variables_enty, String>{
 
     Page<variables_enty> findByResponsableRegisterAndIdFuente(Integer responsableRegister, String idFuente,
             Pageable pageable);
+
+    
 
 }

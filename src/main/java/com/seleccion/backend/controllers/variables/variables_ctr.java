@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seleccion.backend.entities.variables.variable_revision_prioridad_dto;
+import com.seleccion.backend.entities.variables.variable_revision_update_dto;
 import com.seleccion.backend.entities.variables.variables_enty;
 import com.seleccion.backend.entities.variables.variables_relacion_dto;
 import com.seleccion.backend.repositories.variables.variables_repo;
@@ -83,5 +85,17 @@ public class variables_ctr {
         return service.getWithRelationsByIdA(idA);
     }
 
+    @GetMapping("/por-fuentes")
+    public List<variable_revision_prioridad_dto> getVariablesByFuentes(@RequestParam List<String> idFuentes) {
+    return service.getVariablesByFuentes(idFuentes);
+    }
+
+    @PutMapping("/revision-prioridad/{idA}")
+    public ResponseEntity<Map<String, Object>> actualizarRevisionPrioridad(
+            @PathVariable String idA,
+            @RequestBody variable_revision_update_dto dto) {
+        Map<String, Object> result = service.actualizarRevisionPrioridad(idA, dto);
+        return ResponseEntity.ok(result);
+    }
     
 }

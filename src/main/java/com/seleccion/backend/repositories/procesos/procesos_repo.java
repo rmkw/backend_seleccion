@@ -3,24 +3,15 @@ package com.seleccion.backend.repositories.procesos;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.seleccion.backend.entities.procesos.procesos_dto;
 import com.seleccion.backend.entities.procesos.procesos_enty;
 
+public interface procesos_repo extends JpaRepository<procesos_enty, String> {
 
-
-public interface procesos_repo extends JpaRepository<procesos_enty, String>  {
-    List<procesos_enty> findByunidadIgnoreCaseOrderByProcesoAsc(String unidad);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE procesos_enty p SET p.comentarioS = :comentario WHERE p.acronimo = :acronimo")
-    void actualizarComentarioPorAcronimo(@Param("acronimo") String acronimo, @Param("comentario") String comentario);
-
+    List<procesos_enty> findByUnidadIgnoreCaseOrderByProcesoAsc(String unidad);
 
     @Query("""
                 SELECT new com.seleccion.backend.entities.procesos.procesos_dto(
@@ -35,8 +26,8 @@ public interface procesos_repo extends JpaRepository<procesos_enty, String>  {
                     p.iin,
                     p.estatus,
                     p.ipi,
-                    p.comentarioS,
-                    p.comentarioA,
+                    p.inicio,
+                    p.conclusion,
                     (SELECT COUNT(v) FROM variables_enty v WHERE v.acronimo = p.acronimo)
                 )
                 FROM procesos_enty p
@@ -44,10 +35,4 @@ public interface procesos_repo extends JpaRepository<procesos_enty, String>  {
                 ORDER BY p.proceso ASC
             """)
     List<procesos_dto> findProcesosConConteoVariablesByUnidad(@Param("unidad") String unidad);
-
-
-
-
-    
-
-} 
+}

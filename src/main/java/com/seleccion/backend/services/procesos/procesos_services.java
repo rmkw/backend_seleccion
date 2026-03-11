@@ -27,9 +27,7 @@ public class procesos_services {
         return repo.findProcesosConConteoVariablesByUnidad(unidad);
     }
 
-    public void actualizarComentario(String acronimo, String comentario) {
-        repo.actualizarComentarioPorAcronimo(acronimo, comentario);
-    }
+    
     
     public List<procesos_dto> obtenerTodosPorUnidad(String unidad) {
         return repo.findProcesosConConteoVariablesByUnidad(unidad);
