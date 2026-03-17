@@ -320,6 +320,13 @@ public import_excel_import_result_dto importar(MultipartFile file, Principal pri
                 v = new variables_enty();
                 v.setIdA(idA);
                 v.setResponsableRegister(responsableId);
+
+                v.setRevisada(false);
+                v.setPrioridad(null);
+                v.setFechaRevision(null);
+                v.setResponsableRevision(null);
+
+                
                 variablesPorIdA.put(idA, v);
                 filaVariable.put(idA, r + 1);
             }
@@ -490,6 +497,12 @@ public import_excel_import_result_dto importar(MultipartFile file, Principal pri
                 if (existente == null) {
                     data.setResponsableRegister(responsableId);
                     data.setResponsableActualizacion(null);
+
+                    data.setRevisada(false);
+                    data.setPrioridad(null);
+                    data.setFechaRevision(null);
+                    data.setResponsableRevision(null);
+
                     variablesRepo.save(data);
                     variablesInsertadas++;
                 } else {

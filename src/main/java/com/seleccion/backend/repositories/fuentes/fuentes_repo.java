@@ -15,6 +15,8 @@ public interface fuentes_repo extends JpaRepository<fuentes_enty, String> {
 
     List<fuentes_enty> findByAcronimoAndResponsableRegisterOrderByEdicionDesc(String acronimo,
             Integer responsableRegister);
+    
+    List<fuentes_enty> findByAcronimoOrderByIdFuenteDesc(String acronimo);
 
 }
 

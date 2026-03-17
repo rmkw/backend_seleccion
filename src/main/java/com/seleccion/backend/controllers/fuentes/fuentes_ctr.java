@@ -52,6 +52,12 @@ public class fuentes_ctr {
         ));
     }
 
+    @GetMapping("/por-proceso/{acronimo}")
+    public ResponseEntity<Map<String, Object>> getFuentesByProceso(@PathVariable String acronimo) {
+        Map<String, Object> result = service.getFuentesByProceso(acronimo);
+        return ResponseEntity.ok(result);
+    }
+
 
 
     @PostMapping

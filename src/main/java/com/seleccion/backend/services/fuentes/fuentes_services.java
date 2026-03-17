@@ -67,6 +67,14 @@ public class fuentes_services {
     }).toList();
 }
 
+    public Map<String, Object> getFuentesByProceso(String acronimo) {
+    List<fuentes_enty> fuentes = repo.findByAcronimoOrderByIdFuenteDesc(acronimo);
+
+    Map<String, Object> response = new HashMap<>();
+    response.put("fuentes", fuentes);
+    return response;
+}
+
 
     @Transactional
     public Map<String, Object> deleteFuenteById(String idFuente) {
@@ -134,6 +142,8 @@ public class fuentes_services {
         response.put("variablesEliminadas", variables.size());
         return response;
     }
+
+    
 
     
 

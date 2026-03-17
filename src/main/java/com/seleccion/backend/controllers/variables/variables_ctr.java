@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.seleccion.backend.entities.variables.variable_revision_masiva_update_dto;
 import com.seleccion.backend.entities.variables.variable_revision_prioridad_dto;
 import com.seleccion.backend.entities.variables.variable_revision_update_dto;
 import com.seleccion.backend.entities.variables.variables_enty;
@@ -97,5 +98,14 @@ public class variables_ctr {
         Map<String, Object> result = service.actualizarRevisionPrioridad(idA, dto);
         return ResponseEntity.ok(result);
     }
+
+    @PutMapping("/revision-prioridad-masiva")
+    public ResponseEntity<Map<String, Object>> actualizarRevisionPrioridadMasiva(
+            @RequestBody variable_revision_masiva_update_dto dto) {
+        Map<String, Object> result = service.actualizarRevisionPrioridadMasiva(dto);
+        return ResponseEntity.ok(result);
+    }
+
+    
     
 }

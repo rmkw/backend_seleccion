@@ -19,6 +19,7 @@ import com.seleccion.backend.entities.mdea.produccion.mdea_traduccion_dto;
 import com.seleccion.backend.entities.ods.produccion.ods_enty;
 import com.seleccion.backend.entities.ods.produccion.ods_traduccion_dto;
 import com.seleccion.backend.entities.pertinencias.pertinencia_enty;
+import com.seleccion.backend.entities.variables.variable_revision_masiva_update_dto;
 import com.seleccion.backend.entities.variables.variable_revision_prioridad_dto;
 import com.seleccion.backend.entities.variables.variable_revision_update_dto;
 import com.seleccion.backend.entities.variables.variables_enty;
@@ -401,7 +402,45 @@ public Map<String, Object> actualizarRevisionPrioridad(String idA, variable_revi
 
     return response;
 }
-    
+    @Transactional
+public Map<String, Object> actualizarRevisionPrioridadMasiva(variable_revision_masiva_update_dto dto) {
+    if (dto.getIdsA() == null || dto.getIdsA().isEmpty()) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe proporcionar al menos un idA");
+    }
+
+    if (dto.getPrioridad() == null || (dto.getPrioridad() != 1 && dto.getPrioridad() != 2)) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La prioridad debe ser 1 o 2");
+    }
+
+    if (dto.getResponsableRevision() == null) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe proporcionar responsableRevision");
+    }
+
+    List<variables_enty> variables = repository.findAllById(dto.getIdsA());
+
+    if (variables.isEmpty()) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron variables para actualizar");
+    }
+
+    java.time.LocalDateTime ahora = java.time.LocalDateTime.now();
+
+    for (variables_enty variable : variables) {
+        variable.setPrioridad(dto.getPrioridad());
+        variable.setRevisada(Boolean.TRUE.equals(dto.getRevisada()));
+        variable.setResponsableRevision(dto.getResponsableRevision());
+        variable.setFechaRevision(ahora);
+    }
+
+    repository.saveAll(variables);
+
+    Map<String, Object> response = new HashMap<>();
+    response.put("message", "Revisión de prioridad masiva actualizada correctamente");
+    response.put("totalActualizadas", variables.size());
+    response.put("prioridad", dto.getPrioridad());
+    response.put("revisada", dto.getRevisada());
+
+    return response;
+}
     
 
 }
