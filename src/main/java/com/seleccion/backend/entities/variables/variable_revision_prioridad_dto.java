@@ -19,6 +19,7 @@ public class variable_revision_prioridad_dto {
     private String acronimo;
     private String nombre;
     private String url;
+    private String definicion;
 
     private Short prioridad;
     private Boolean revisada;

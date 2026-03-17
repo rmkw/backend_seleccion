@@ -352,6 +352,7 @@ private cat_indicador_repo catIndicadorRepository;
                 .acronimo(var.getAcronimo())
                 .nombre(var.getNombre())
                 .url(var.getUrl())
+                .definicion(var.getDefinicion())
                 .prioridad(var.getPrioridad())
                 .revisada(var.getRevisada())
                 .fechaRevision(var.getFechaRevision())
