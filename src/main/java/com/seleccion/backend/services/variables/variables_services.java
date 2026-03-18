@@ -22,6 +22,7 @@ import com.seleccion.backend.entities.pertinencias.pertinencia_enty;
 import com.seleccion.backend.entities.variables.variable_revision_masiva_update_dto;
 import com.seleccion.backend.entities.variables.variable_revision_prioridad_dto;
 import com.seleccion.backend.entities.variables.variable_revision_update_dto;
+import com.seleccion.backend.entities.variables.variable_tabla_dto;
 import com.seleccion.backend.entities.variables.variables_enty;
 import com.seleccion.backend.entities.variables.variables_relacion_dto;
 import com.seleccion.backend.repositories.mdea.catalogo.cat_componente_repo;
@@ -441,6 +442,39 @@ public Map<String, Object> actualizarRevisionPrioridadMasiva(variable_revision_m
     response.put("revisada", dto.getRevisada());
 
     return response;
+}
+
+public List<variable_tabla_dto> getVariablesTablaByFuentes(List<String> idFuentes) {
+    if (idFuentes == null || idFuentes.isEmpty()) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Debe proporcionar al menos un id_fuente"
+        );
+    }
+
+    List<variables_enty> variables = repository.findByIdFuenteInOrderByIdFuenteDescIdAAsc(idFuentes);
+
+    return variables.stream()
+        .map(var -> variable_tabla_dto.builder()
+            .idA(var.getIdA())
+            .idS(var.getIdS())
+            .idFuente(var.getIdFuente())
+            .acronimo(var.getAcronimo())
+            .nombre(var.getNombre())
+            .definicion(var.getDefinicion())
+            .url(var.getUrl())
+            .comentarioS(var.getComentarioS())
+            .mdea(var.getMdea())
+            .ods(var.getOds())
+            .responsableRegister(var.getResponsableRegister())
+            .responsableActualizacion(var.getResponsableActualizacion())
+            .prioridad(var.getPrioridad())
+            .revisada(var.getRevisada())
+            .fechaRevision(var.getFechaRevision())
+            .responsableRevision(var.getResponsableRevision())
+            .build()
+        )
+        .toList();
 }
     
 

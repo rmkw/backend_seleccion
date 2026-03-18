@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.seleccion.backend.entities.variables.variable_revision_masiva_update_dto;
 import com.seleccion.backend.entities.variables.variable_revision_prioridad_dto;
 import com.seleccion.backend.entities.variables.variable_revision_update_dto;
+import com.seleccion.backend.entities.variables.variable_tabla_dto;
 import com.seleccion.backend.entities.variables.variables_enty;
 import com.seleccion.backend.entities.variables.variables_relacion_dto;
 import com.seleccion.backend.repositories.variables.variables_repo;
@@ -104,6 +105,12 @@ public class variables_ctr {
             @RequestBody variable_revision_masiva_update_dto dto) {
         Map<String, Object> result = service.actualizarRevisionPrioridadMasiva(dto);
         return ResponseEntity.ok(result);
+    }
+
+
+    @GetMapping("/por-fuentes-tabla")
+    public List<variable_tabla_dto> getVariablesTablaByFuentes(@RequestParam List<String> idFuentes) {
+        return service.getVariablesTablaByFuentes(idFuentes);
     }
 
     
