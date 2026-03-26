@@ -40,7 +40,8 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(authz -> authz
                                                 .requestMatchers( 
                                                         "/api/auth/**",
-                                                        "/api/pertinencia/**",
+                                                                "/api/armo/variables/**",
+                                                                        "/api/pertinencia/**",
                                                         "/api/fuentes/**",
                                                         "/api/variables/**",
                                                         "/api/mdea/**",
