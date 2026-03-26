@@ -4,6 +4,7 @@ package com.seleccion.backend.repositories.fuentes;
 
 import java.util.List;
 
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
@@ -17,6 +18,8 @@ public interface fuentes_repo extends JpaRepository<fuentes_enty, String> {
             Integer responsableRegister);
     
     List<fuentes_enty> findByAcronimoOrderByIdFuenteDesc(String acronimo);
+
+    
 
 }
 

@@ -48,7 +48,8 @@ public class SecurityConfig {
                                                         "/api/procesos-locales/**",
                                                                 "/api/usuarios/**",
                                                                         "/api/unidad/**",
-                                                        "/api/procesos/**").permitAll()
+                                                        "/api/procesos/**",
+                                                                "/api/armo/fuentes/**").permitAll()
                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
@@ -114,9 +115,8 @@ public class SecurityConfig {
 
                 configuration.setAllowedOrigins(List.of(
                                 "http://localhost:4200",
-                                "http://127.0.0.1:4200",
-                                "http://10.109.1.13:4200",
-                                "http://10.109.1.60:4200"));
+                                "http://127.0.0.1:4200"
+                                ));
                 configuration.setAllowCredentials(true);
 
                 configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // ✅ incluye
