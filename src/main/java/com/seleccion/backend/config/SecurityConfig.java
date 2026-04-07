@@ -47,7 +47,7 @@ public class SecurityConfig {
                                                         "/api/mdea/**",
                                                         "/api/ods/**",
                                                         "/api/procesos-locales/**",
-                                                                "/api/usuarios/**",
+                                                                "/api/usuarios/**","/api/catalog/**",
                                                                         "/api/unidad/**",
                                                         "/api/procesos/**",
                                                                 "/api/armo/fuentes/**").permitAll()
