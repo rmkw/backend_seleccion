@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.Set;
 
 @Entity
-@Table(name = "usuarios", schema = "users")
+@Table(name = "usuarios", schema = "usuarios")
 @Getter
 @Setter
 public class usuario_enty {
@@ -23,7 +23,7 @@ public class usuario_enty {
     @CollectionTable(
         name = "usuarios_roles", 
         joinColumns = @JoinColumn(name = "usuario_id"),
-        schema = "users"
+        schema = "usuarios"
         )
     @Column(name = "rol")
     private Set<String> roles;
