@@ -116,7 +116,8 @@ public class SecurityConfig {
 
                 configuration.setAllowedOrigins(List.of(
                                 "http://localhost:4200",
-                                "http://127.0.0.1:4200"
+                                "http://127.0.0.1:4200",
+                                "http://10.200.130.27:8090"
                                 ));
                 configuration.setAllowCredentials(true);
 
