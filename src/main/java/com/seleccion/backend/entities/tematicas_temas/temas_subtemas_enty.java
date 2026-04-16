@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 @Entity
-@Table(name = "temas_subtemas", schema = "catalog")
+@Table(name = "temas_subtemas", schema = "catalogos")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

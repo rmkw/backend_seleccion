@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "mdea", schema = "seleccion_variables")
+@Table(name = "mdea", schema = "seleccion")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
