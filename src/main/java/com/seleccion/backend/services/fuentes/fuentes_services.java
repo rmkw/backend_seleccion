@@ -143,6 +143,10 @@ public class fuentes_services {
         return response;
     }
 
+    public Long contarFuentes() {
+        return repo.count();
+    }
+
     
 
     

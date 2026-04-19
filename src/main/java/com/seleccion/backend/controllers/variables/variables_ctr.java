@@ -1,5 +1,6 @@
 package com.seleccion.backend.controllers.variables;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -113,6 +114,15 @@ public class variables_ctr {
         return service.getVariablesTablaByFuentes(idFuentes);
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<?> countVariables() {
+        return ResponseEntity.ok(Collections.singletonMap("total", service.contarVariables()));
+    }
     
+    @GetMapping("/count-prioridad")
+    public ResponseEntity<?> countVariablesPrioritarias() {
+        return ResponseEntity.ok(
+                Collections.singletonMap("total", service.contarVariablesPrioritarias()));
+    }
     
 }

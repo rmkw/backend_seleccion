@@ -1,5 +1,6 @@
 package com.seleccion.backend.controllers.variables;
 
+import java.util.Collections;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import com.seleccion.backend.services.variables.variables_armo_service;
 @RequestMapping("/api/armo/variables")
 public class variables_armo_controller {
     private final variables_armo_service variablesArmoService;
+    
 
     public variables_armo_controller(variables_armo_service variablesArmoService) {
         this.variablesArmoService = variablesArmoService;
@@ -74,5 +76,11 @@ public class variables_armo_controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Error al eliminar la variable en armonización: " + e.getMessage());
         }
+    }
+    
+    @GetMapping("/count")
+    public ResponseEntity<?> countVariablesArmonizadas() {
+        return ResponseEntity.ok(
+                Collections.singletonMap("total", variablesArmoService.contarVariablesArmonizadas()));
     }
 }

@@ -477,6 +477,14 @@ public List<variable_tabla_dto> getVariablesTablaByFuentes(List<String> idFuente
         .toList();
 }
     
+public Long contarVariables() {
+    return repository.count();
+}
+
+public Long contarVariablesPrioritarias() {
+    return repository.countByPrioridad((short) 1);
+}
+    
 
 }
 

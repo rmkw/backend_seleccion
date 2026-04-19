@@ -1,5 +1,6 @@
 package com.seleccion.backend.services.variables;
 
+import com.seleccion.backend.repositories.variables.variables_repo;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -13,10 +14,12 @@ import com.seleccion.backend.repositories.variables.variables_armo_repo;
 @Service
 public class variables_armo_service_impl implements variables_armo_service {
 
+    private final variables_repo variables_repo;
     private final variables_armo_repo variablesArmoRepo;
 
-    public variables_armo_service_impl(variables_armo_repo variablesArmoRepo) {
+    public variables_armo_service_impl(variables_armo_repo variablesArmoRepo, variables_repo variables_repo) {
         this.variablesArmoRepo = variablesArmoRepo;
+        this.variables_repo = variables_repo;
     }
 
     @Override
@@ -132,5 +135,10 @@ public class variables_armo_service_impl implements variables_armo_service {
                 dto.getOds(),
                 dto.getComentarioS(),
                 dto.getComentarioA());
+    }
+    
+    @Override
+    public Long contarVariablesArmonizadas() {
+        return variablesArmoRepo.count();
     }
 }

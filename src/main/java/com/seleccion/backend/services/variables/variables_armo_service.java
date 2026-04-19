@@ -16,4 +16,7 @@ public interface variables_armo_service {
     variables_armo_dto actualizarVariable(String idA, variables_armo_dto dto);
 
     void eliminarVariable(String idA);
+
+    Long contarVariablesArmonizadas();
+    
 }

@@ -36,6 +36,8 @@ public interface variables_repo extends JpaRepository<variables_enty, String>{
     Page<variables_enty> findByResponsableRegisterAndIdFuente(Integer responsableRegister, String idFuente,
             Pageable pageable);
 
+    Long countByPrioridad(Short prioridad);
+
     
 
 }

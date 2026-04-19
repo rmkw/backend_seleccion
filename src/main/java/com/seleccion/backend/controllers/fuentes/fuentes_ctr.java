@@ -3,6 +3,7 @@ package com.seleccion.backend.controllers.fuentes;
 
 
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -109,5 +110,9 @@ public class fuentes_ctr {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<?> countFuentes() {
+        return ResponseEntity.ok(Collections.singletonMap("total", service.contarFuentes()));
+    }
     
 }

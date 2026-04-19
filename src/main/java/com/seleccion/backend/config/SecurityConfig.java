@@ -63,53 +63,19 @@ public class SecurityConfig {
                                         .requireExplicitSave(false)
                                         )
                                         .cors(cors -> cors.configurationSource(corsConfigurationSource())
-                                        )
-                                        .anonymous(anonymous -> anonymous.disable());
+                                        );
+                                        
 
                 return http.build();
         }
 
-        // @Bean
-        // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws
-        // Exception {
-        // http
-        // .csrf(csrf -> csrf.disable())
-        // .authorizeHttpRequests(authz -> authz
-        // .anyRequest().permitAll()); // Permitir todas las solicitudes sin
-        // // autenticación ni autorización
-
-        // return http.build();
-        // }
+        
         @Bean
         public PasswordEncoder passwordEncoder() {
                 return new BCryptPasswordEncoder(); // Encriptar contraseñas con BCrypt
         }
 
-        // @Bean
-        // public CorsConfigurationSource corsConfigurationSource() {
-        //         CorsConfiguration configuration = new CorsConfiguration();
-
-        //         // Permitir solicitudes desde Angular y cualquier IP en la red 10.109.1.X:4200
-        //         configuration.setAllowedOrigins(List.of(
-        //                         "http://10.109.1.13:4200", // IP exacta de tu frontend
-        //                         "http://localhost:4200",
-        //                         "http://192.168.0.8:4200"));
-
-        //         // Permitir todos los métodos HTTP
-        //         configuration.setAllowedMethods(List.of("*"));
-
-        //         // Permitir todas las cabeceras
-        //         configuration.setAllowedHeaders(List.of("*"));
-
-        //         // Permitir el uso de cookies (JSESSIONID)
-        //         configuration.setAllowCredentials(true);
-
-        //         // Aplicar esta configuración a todas las rutas
-        //         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        //         source.registerCorsConfiguration("/**", configuration);
-
-        //         return source;
-        // }
+        
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
@@ -117,7 +83,8 @@ public class SecurityConfig {
                 configuration.setAllowedOrigins(List.of(
                                 "http://localhost:4200",
                                 "http://127.0.0.1:4200",
-                                "http://10.200.130.27:8090"
+                                "http://10.200.130.27:8090",
+                                "http://10.109.1.27:4200"
                                 ));
                 configuration.setAllowCredentials(true);
 

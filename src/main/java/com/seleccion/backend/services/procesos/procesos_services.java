@@ -47,8 +47,11 @@ public class procesos_services {
     return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(Map.of("message", "Proceso registrado exitosamente"));
-}
+    }
 
+    public Long contarProcesos() {
+    return repo.count();
+    }
     
     
 }

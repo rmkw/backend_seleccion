@@ -1,5 +1,6 @@
 package com.seleccion.backend.controllers.procesos;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -66,6 +67,10 @@ public class procesos_ctr {
     }
 
 
+    @GetMapping("/count")
+    public ResponseEntity<?> countProcesos() {
+        return ResponseEntity.ok(Collections.singletonMap("total", service.contarProcesos()));
+    }
 
     
 
