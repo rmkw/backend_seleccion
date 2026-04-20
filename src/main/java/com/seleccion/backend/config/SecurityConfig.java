@@ -50,6 +50,8 @@ public class SecurityConfig {
                                                                 "/api/usuarios/**","/api/catalog/**",
                                                                         "/api/unidad/**",
                                                         "/api/procesos/**",
+                                                                "/api/sele/**",
+                                                                "/api/armo/**",
                                                                 "/api/armo/fuentes/**").permitAll()
                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session
