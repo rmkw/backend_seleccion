@@ -484,6 +484,37 @@ public Long contarVariables() {
 public Long contarVariablesPrioritarias() {
     return repository.countByPrioridad((short) 1);
 }
+
+public List<variable_tabla_dto> getVariablesTablaByFuente(String idFuente) {
+    if (idFuente == null || idFuente.isBlank()) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Debe proporcionar un id_fuente");
+    }
+
+    List<variables_enty> variables = repository.findByIdFuente(idFuente);
+
+    return variables.stream()
+            .map(var -> variable_tabla_dto.builder()
+                    .idA(var.getIdA())
+                    .idS(var.getIdS())
+                    .idFuente(var.getIdFuente())
+                    .acronimo(var.getAcronimo())
+                    .nombre(var.getNombre())
+                    .definicion(var.getDefinicion())
+                    .url(var.getUrl())
+                    .comentarioS(var.getComentarioS())
+                    .mdea(var.getMdea())
+                    .ods(var.getOds())
+                    .responsableRegister(var.getResponsableRegister())
+                    .responsableActualizacion(var.getResponsableActualizacion())
+                    .prioridad(var.getPrioridad())
+                    .revisada(var.getRevisada())
+                    .fechaRevision(var.getFechaRevision())
+                    .responsableRevision(var.getResponsableRevision())
+                    .build())
+            .toList();
+}
     
 
 }

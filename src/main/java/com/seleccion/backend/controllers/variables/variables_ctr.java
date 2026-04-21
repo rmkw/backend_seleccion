@@ -61,27 +61,16 @@ public class variables_ctr {
 
 
 
-    @DeleteMapping("/delete/{idA}")
-    public void deleteVariable(@PathVariable String idA) {
-        service.deleteByIdA(idA);
-    }
+    
 
     @GetMapping("/por-id/{idS}")
     public List<variables_relacion_dto> getByIdSWithRelations(@PathVariable String idS) {
         return service.getWithRelationsByIdS(idS);
     }
 
-    @DeleteMapping("/delete-full/{idA}")
-    public ResponseEntity<Map<String, Object>> deleteVariableCascade(@PathVariable String idA) {
-        Map<String, Object> result = service.deleteVariableAndCascade(idA);
-        return ResponseEntity.ok(result);
-    }
+    
 
-    @PutMapping("/edit/{idA}")
-    public ResponseEntity<Map<String, Object>> editarVariable(@PathVariable String idA, @RequestBody variables_relacion_dto dto) {
-        Map<String, Object> result = service.editarVariable(idA, dto);
-        return ResponseEntity.ok(result);
-    }
+   
 
     @GetMapping("/por-ida/{idA}")
     public variables_relacion_dto getByIdAWithRelations(@PathVariable String idA) {
@@ -123,6 +112,11 @@ public class variables_ctr {
     public ResponseEntity<?> countVariablesPrioritarias() {
         return ResponseEntity.ok(
                 Collections.singletonMap("total", service.contarVariablesPrioritarias()));
+    }
+
+    @GetMapping("/por-fuente")
+    public List<variable_tabla_dto> getVariablesTablaByFuente(@RequestParam String idFuente) {
+        return service.getVariablesTablaByFuente(idFuente);
     }
     
 }
