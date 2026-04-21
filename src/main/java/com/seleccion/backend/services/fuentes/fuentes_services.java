@@ -1,157 +1,157 @@
 package com.seleccion.backend.services.fuentes;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.seleccion.backend.entities.fuentes.fuentes_dto;
 import com.seleccion.backend.entities.fuentes.fuentes_enty;
-import com.seleccion.backend.entities.variables.variables_enty;
 import com.seleccion.backend.repositories.fuentes.fuentes_repo;
-import com.seleccion.backend.repositories.mdea.produccion.mdea_repo;
-import com.seleccion.backend.repositories.ods.produccion.ods_repo;
-import com.seleccion.backend.repositories.pertinencias.pertinencia_repo;
 import com.seleccion.backend.repositories.variables.variables_repo;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class fuentes_services {
-    @Autowired
-    private fuentes_repo repo;
 
+    private final fuentes_repo repo;
+    private final variables_repo variableRepo;
 
-    @Autowired
-    private variables_repo variableRepo;
+    private String construirIdFuente(String acronimo, String fuente, String edicion, String url) {
+        String edicionSafe = edicion != null ? edicion : "";
+        String urlSafe = url != null ? url : "";
+        return acronimo + "-" + fuente + "-" + edicionSafe + "-" + urlSafe;
+    }
 
-    @Autowired
-    private pertinencia_repo pertinenciaRepo;
+    public List<fuentes_dto> getByAcronimo(String acronimo) {
+        if (acronimo == null || acronimo.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El acrónimo es obligatorio");
+        }
 
-    @Autowired
-    private mdea_repo mdeaRepo;
+        List<fuentes_enty> fuentes = repo.findByAcronimoOrderByIdFuenteDesc(acronimo.trim());
 
-    @Autowired
-    private ods_repo odsRepo;
+        return fuentes.stream().map(f -> {
+            Long totalVariables = variableRepo.countByIdFuente(f.getIdFuente());
 
+            return new fuentes_dto(
+                    f.getIdFuente(),
+                    f.getAcronimo(),
+                    f.getFuente(),
+                    f.getUrl(),
+                    f.getEdicion(),
+                    f.getComentarioS(),
+                    f.getResponsableRegister(),
+                    f.getResponsableActualizacion(),
+                    totalVariables);
+        }).toList();
+    }
 
+    public fuentes_enty getByIdFuente(String idFuente) {
+        return repo.findById(idFuente)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Fuente no encontrada"));
+    }
+
+    @Transactional
     public fuentes_enty create(fuentes_enty fuente) {
-        if (repo.existsById(fuente.getIdFuente())) {
-            throw new IllegalArgumentException("Ya existe una fuente con ese ID");
+        if (fuente.getAcronimo() == null || fuente.getAcronimo().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El acrónimo es obligatorio");
         }
 
-        return repo.save(fuente);
-    }    
+        if (fuente.getFuente() == null || fuente.getFuente().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La fuente es obligatoria");
+        }
 
-    public List<fuentes_dto> getByAcronimoAndResponsable(String acronimo, Integer responsableRegister) {
-    List<fuentes_enty> fuentes = repo.findByAcronimoAndResponsableRegisterOrderByEdicionDesc(acronimo, responsableRegister);
+        String acronimo = fuente.getAcronimo().trim();
+        String nombreFuente = fuente.getFuente().trim();
+        String url = fuente.getUrl() != null ? fuente.getUrl().trim() : null;
+        String edicion = fuente.getEdicion() != null ? fuente.getEdicion().trim() : null;
+        String comentarioS = fuente.getComentarioS();
+        String comentarioA = fuente.getComentarioA();
+        Integer responsableRegister = fuente.getResponsableRegister();
+        Integer responsableActualizacion = fuente.getResponsableActualizacion();
+        String idFuenteSeleccion = fuente.getIdFuenteSeleccion();
 
-    return fuentes.stream().map(f -> {
-        Long totalVariables = variableRepo.countByIdFuente(f.getIdFuente());
+        String nuevoId = construirIdFuente(acronimo, nombreFuente, edicion, url);
 
-        return new fuentes_dto(
-                f.getIdFuente(),
-                f.getAcronimo(),
-                f.getFuente(),
-                f.getUrl(),
-                f.getEdicion(),
-                f.getComentarioS(),
-                f.getResponsableRegister(),
-                f.getResponsableActualizacion(),
-                totalVariables
-        );
-    }).toList();
-}
+        if (repo.existsById(nuevoId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Ya existe una fuente con esos datos");
+        }
 
-    public Map<String, Object> getFuentesByProceso(String acronimo) {
-    List<fuentes_enty> fuentes = repo.findByAcronimoOrderByIdFuenteDesc(acronimo);
+        repo.insertarFuente(
+                acronimo,
+                nombreFuente,
+                url,
+                edicion,
+                comentarioS,
+                comentarioA,
+                responsableRegister,
+                responsableActualizacion,
+                idFuenteSeleccion);
 
-    Map<String, Object> response = new HashMap<>();
-    response.put("fuentes", fuentes);
-    return response;
-}
-
+        return repo.findById(nuevoId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "La fuente se insertó pero no se pudo recuperar"));
+    }
 
     @Transactional
-    public Map<String, Object> deleteFuenteById(String idFuente) {
-        Optional<fuentes_enty> optional = repo.findById(idFuente);
+    public fuentes_enty update(String idFuenteActual, fuentes_enty nuevaFuente) {
+        if (!repo.existsById(idFuenteActual)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fuente no encontrada");
+        }
 
-        if (optional.isEmpty()) {
+        if (nuevaFuente.getAcronimo() == null || nuevaFuente.getAcronimo().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El acrónimo es obligatorio");
+        }
+
+        if (nuevaFuente.getFuente() == null || nuevaFuente.getFuente().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La fuente es obligatoria");
+        }
+
+        String acronimo = nuevaFuente.getAcronimo().trim();
+        String nombreFuente = nuevaFuente.getFuente().trim();
+        String url = nuevaFuente.getUrl() != null ? nuevaFuente.getUrl().trim() : null;
+        String edicion = nuevaFuente.getEdicion() != null ? nuevaFuente.getEdicion().trim() : null;
+        String comentarioS = nuevaFuente.getComentarioS();
+        String comentarioA = nuevaFuente.getComentarioA();
+        Integer responsableActualizacion = nuevaFuente.getResponsableActualizacion();
+        String idFuenteSeleccion = nuevaFuente.getIdFuenteSeleccion();
+
+        repo.actualizarFuente(
+                idFuenteActual,
+                acronimo,
+                nombreFuente,
+                url,
+                edicion,
+                comentarioS,
+                comentarioA,
+                responsableActualizacion,
+                idFuenteSeleccion);
+
+        String nuevoId = construirIdFuente(acronimo, nombreFuente, edicion, url);
+
+        return repo.findById(nuevoId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "La fuente se actualizó pero no se pudo recuperar"));
+    }
+
+    @Transactional
+    public void deleteById(String idFuente) {
+        if (!repo.existsById(idFuente)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fuente no encontrada");
         }
 
         repo.deleteById(idFuente);
-
-        return Map.of(
-                "message", "Fuente eliminada correctamente",
-                "id", idFuente);
-    }
-
-    public fuentes_enty update(String id, fuentes_enty nuevaFuente) {
-        Optional<fuentes_enty> optional = repo.findById(id);
-
-        if (optional.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fuente no encontrada");
-        }
-
-        fuentes_enty existente = optional.get();
-
-        existente.setFuente(nuevaFuente.getFuente());
-        existente.setUrl(nuevaFuente.getUrl());
-        existente.setEdicion(nuevaFuente.getEdicion());
-        existente.setComentarioS(nuevaFuente.getComentarioS());
-        existente.setResponsableActualizacion(nuevaFuente.getResponsableActualizacion());
-        existente.setAcronimo(nuevaFuente.getAcronimo());
-        existente.setResponsableRegister(nuevaFuente.getResponsableRegister());
-
-        return repo.save(existente);
-    }
-
-    @Transactional
-    public Map<String, Object> deleteFuenteAndCascade(String idFuente) {
-        Optional<fuentes_enty> optionalRecord = repo.findById(idFuente);
-
-        if (optionalRecord.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fuente no encontrada");
-        }
-
-        // Obtener las variables asociadas a esta fuente
-        List<variables_enty> variables = variableRepo.findByIdFuente(idFuente);
-
-        for (variables_enty var : variables) {
-            String idA = var.getIdA();
-
-            // Eliminar relaciones por idA
-            pertinenciaRepo.deleteByIdA(idA);
-            odsRepo.deleteByIdA(idA);
-            mdeaRepo.deleteByIdA(idA);
-
-            // Eliminar variable
-            variableRepo.deleteById(idA);
-        }
-
-        // Eliminar la fuente
-        repo.deleteById(idFuente);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Fuente y datos relacionados eliminados correctamente");
-        response.put("variablesEliminadas", variables.size());
-        return response;
     }
 
     public Long contarFuentes() {
         return repo.count();
     }
-
-    
-
-    
-
-   
-
-
 }
