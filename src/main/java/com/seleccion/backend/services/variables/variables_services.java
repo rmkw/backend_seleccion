@@ -516,6 +516,48 @@ public List<variable_tabla_dto> getVariablesTablaByFuente(String idFuente) {
             .toList();
 }
     
+@Transactional
+public Map<String, Object> editarVariableBasica(String idA, variables_enty dto) {
+    variables_enty variable = repository.findById(idA)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable no encontrada"));
+
+    variable.setIdS(dto.getIdS());
+    variable.setNombre(dto.getNombre());
+    variable.setDefinicion(dto.getDefinicion());
+    variable.setUrl(dto.getUrl());
+    variable.setComentarioS(dto.getComentarioS());
+    variable.setResponsableActualizacion(dto.getResponsableActualizacion());
+
+    // por ahorita mantenemos estas banderas simples
+    variable.setMdea(dto.getMdea());
+    variable.setOds(dto.getOds());
+
+    // si quieres conservarlas fijas en selección:
+    variable.setPrioridad(dto.getPrioridad());
+    variable.setRevisada(dto.getRevisada());
+    variable.setFechaRevision(dto.getFechaRevision());
+    variable.setResponsableRevision(dto.getResponsableRevision());
+
+    repository.save(variable);
+
+    Map<String, Object> response = new HashMap<>();
+    response.put("message", "Variable actualizada correctamente");
+    response.put("idA", variable.getIdA());
+    return response;
+}
+
+@Transactional
+public Map<String, Object> deleteVariableBasica(String idA) {
+    variables_enty variable = repository.findById(idA)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable no encontrada"));
+
+    repository.delete(variable);
+
+    Map<String, Object> response = new HashMap<>();
+    response.put("message", "Variable eliminada correctamente");
+    response.put("idA", idA);
+    return response;
+}
 
 }
 

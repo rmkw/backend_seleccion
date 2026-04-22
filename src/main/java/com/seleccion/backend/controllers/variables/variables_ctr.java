@@ -118,5 +118,25 @@ public class variables_ctr {
     public List<variable_tabla_dto> getVariablesTablaByFuente(@RequestParam String idFuente) {
         return service.getVariablesTablaByFuente(idFuente);
     }
+
+    @PutMapping("/edit/{idA}")
+    public ResponseEntity<Map<String, Object>> editarVariable(
+            @PathVariable String idA,
+            @RequestBody variables_enty variable) {
+        Map<String, Object> result = service.editarVariableBasica(idA, variable);
+        return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping("/delete/{idA}")
+    public ResponseEntity<Map<String, Object>> deleteVariable(@PathVariable String idA) {
+        Map<String, Object> result = service.deleteVariableBasica(idA);
+        return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping("/delete-full/{idA}")
+    public ResponseEntity<Map<String, Object>> deleteVariableCascade(@PathVariable String idA) {
+        Map<String, Object> result = service.deleteVariableAndCascade(idA);
+        return ResponseEntity.ok(result);
+    }
     
 }
