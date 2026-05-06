@@ -1,10 +1,9 @@
 package com.seleccion.backend.entities.variables;
 
-
-import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "variables", schema = "seleccion")
@@ -13,6 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class variables_enty {
+
     @Id
     @Column(name = "id_a", nullable = false)
     private String idA;
@@ -29,29 +29,23 @@ public class variables_enty {
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @Column(name = "definicion")
+    @Column(name = "definicion", nullable = false)
     private String definicion;
 
-    @Column(name = "url")
+    @Column(name = "url", nullable = false)
     private String url;
 
-    @Column(name = "comentario_s")
+    @Column(name = "comentario_s", nullable = false)
     private String comentarioS;
 
-    @Column(name = "mdea")
+    @Column(name = "mdea", nullable = false)
     private Boolean mdea;
 
-    @Column(name = "ods")
+    @Column(name = "ods", nullable = false)
     private Boolean ods;
 
-    @Column(name = "responsable_register", nullable = false)
-    private Integer responsableRegister;
-
-    @Column(name = "responsable_actualizacion")
-    private Integer responsableActualizacion;
-
     @Column(name = "prioridad")
-    private Short prioridad;
+    private Integer prioridad;
 
     @Column(name = "revisada", nullable = false)
     private Boolean revisada;

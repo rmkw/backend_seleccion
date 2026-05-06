@@ -20,34 +20,30 @@ public class fuentes_ctr {
     private final fuentes_services service;
 
     @GetMapping("/por-acronimo")
-    public ResponseEntity<List<fuentes_dto>> getByAcronimo(
-            @RequestParam String acronimo) {
+    public ResponseEntity<List<fuentes_dto>> getByAcronimo(@RequestParam String acronimo) {
         return ResponseEntity.ok(service.getByAcronimo(acronimo));
     }
 
-    @GetMapping("/by-id")
-    public ResponseEntity<fuentes_enty> getByIdFuente(
-            @RequestParam String idFuente) {
-        return ResponseEntity.ok(service.getByIdFuente(idFuente));
+    @GetMapping("/by-id-fuente-seleccion")
+    public ResponseEntity<fuentes_enty> getByIdFuenteSeleccion(@RequestParam String idFuenteSeleccion) {
+        return ResponseEntity.ok(service.getByIdFuenteSeleccion(idFuenteSeleccion));
     }
 
     @PostMapping
-    public ResponseEntity<fuentes_enty> create(
-            @RequestBody fuentes_enty fuente) {
+    public ResponseEntity<fuentes_enty> create(@RequestBody fuentes_enty fuente) {
         return ResponseEntity.ok(service.create(fuente));
     }
 
     @PutMapping("/update")
     public ResponseEntity<fuentes_enty> update(
-            @RequestParam String idFuente,
+            @RequestParam String idFuenteSeleccion,
             @RequestBody fuentes_enty datos) {
-        return ResponseEntity.ok(service.update(idFuente, datos));
+        return ResponseEntity.ok(service.update(idFuenteSeleccion, datos));
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteFuente(
-            @RequestParam String idFuente) {
-        service.deleteById(idFuente);
+    @DeleteMapping
+    public ResponseEntity<?> delete(@RequestParam String idFuenteSeleccion) {
+        service.deleteByIdFuenteSeleccion(idFuenteSeleccion);
         return ResponseEntity.ok(Collections.singletonMap("message", "Fuente eliminada correctamente"));
     }
 

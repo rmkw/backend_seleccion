@@ -21,7 +21,7 @@ public class variable_revision_prioridad_dto {
     private String url;
     private String definicion;
 
-    private Short prioridad;
+    private Integer prioridad;
     private Boolean revisada;
     private LocalDateTime fechaRevision;
     private Integer responsableRevision;

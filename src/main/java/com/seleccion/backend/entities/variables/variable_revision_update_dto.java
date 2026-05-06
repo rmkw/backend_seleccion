@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 public class variable_revision_update_dto {
     
-    private Short prioridad;
+    private Integer prioridad;
     private Boolean revisada;
     private Integer responsableRevision;
 }

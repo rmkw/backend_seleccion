@@ -1,13 +1,6 @@
 package com.seleccion.backend.entities.fuentes;
 
-
-
-
-import jakarta.persistence.Column;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -17,7 +10,11 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class fuentes_armo_enty {
+
     @Id
+    @Column(name = "id_fuente_seleccion", nullable = false)
+    private String idFuenteSeleccion;
+
     @Column(name = "id_fuente", insertable = false, updatable = false)
     private String idFuente;
 
@@ -27,10 +24,10 @@ public class fuentes_armo_enty {
     @Column(name = "fuente", nullable = false)
     private String fuente;
 
-    @Column(name = "url")
+    @Column(name = "url", nullable = false)
     private String url;
 
-    @Column(name = "edicion")
+    @Column(name = "edicion", nullable = false)
     private String edicion;
 
     @Column(name = "comentario_s")
@@ -38,7 +35,4 @@ public class fuentes_armo_enty {
 
     @Column(name = "comentario_a")
     private String comentarioA;
-
-    @Column(name = "id_fuente_seleccion")
-    private String idFuenteSeleccion;
 }

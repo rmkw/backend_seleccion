@@ -12,13 +12,9 @@ import org.springframework.lang.NonNull;
 import com.seleccion.backend.entities.variables.variables_enty;
 
 public interface variables_repo extends JpaRepository<variables_enty, String>{
-    boolean existsByIdSAndIdFuente(String idS, String idFuente);
-
     boolean existsByIdA(String idA);
 
-    List<variables_enty> findByResponsableRegisterAndIdFuenteOrderByIdA(Integer responsableRegister, String idFuente);
-
-    List<variables_enty> findByIdA(String idA);
+    boolean existsByIdSAndIdFuente(String idS, String idFuente);
 
     List<variables_enty> findByIdS(String idS);
 
@@ -26,18 +22,10 @@ public interface variables_repo extends JpaRepository<variables_enty, String>{
 
     List<variables_enty> findByIdFuenteInOrderByIdFuenteDescIdAAsc(List<String> idFuentes);
 
-    void deleteById(@NonNull String idA);
+    Long countByIdFuente(String idFuente);
 
-
-    @Query("SELECT COUNT(v) FROM variables_enty v WHERE v.idFuente = :idFuente")
-    Long countByIdFuente(@Param("idFuente") String idFuente);
-
-
-    Page<variables_enty> findByResponsableRegisterAndIdFuente(Integer responsableRegister, String idFuente,
-            Pageable pageable);
-
-    Long countByPrioridad(Short prioridad);
-
+    Long countByPrioridad(Integer prioridad);
     
+    Page<variables_enty> findByIdFuente(String idFuente, Pageable pageable);
 
 }

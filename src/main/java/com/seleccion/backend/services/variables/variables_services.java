@@ -1,6 +1,5 @@
 package com.seleccion.backend.services.variables;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,55 +43,56 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class variables_services {
-    private final variables_repo repository;
 
+    private final variables_repo repository;
 
     @Autowired
     private mdea_repo mdeaRepository;
+
     @Autowired
     private ods_repo odsRepository;
+
     @Autowired
     private pertinencia_repo pertinenciaRepository;
 
     @Autowired
-private cat_componente_repo catComponenteRepository;
+    private cat_componente_repo catComponenteRepository;
 
-@Autowired
-private cat_subcomponente_repo catSubcomponenteRepository;
+    @Autowired
+    private cat_subcomponente_repo catSubcomponenteRepository;
 
-@Autowired
-private cat_tema_repo catTemaRepository;
+    @Autowired
+    private cat_tema_repo catTemaRepository;
 
-@Autowired
-private cat_estadistico1_repo catEstadistico1Repository;
+    @Autowired
+    private cat_estadistico1_repo catEstadistico1Repository;
 
-@Autowired
-private cat_estadistico2_repo catEstadistico2Repository;
+    @Autowired
+    private cat_estadistico2_repo catEstadistico2Repository;
 
-@Autowired
-private cat_objetivo_repo catObjetivoRepository;
+    @Autowired
+    private cat_objetivo_repo catObjetivoRepository;
 
-@Autowired
-private cat_meta_repo catMetaRepository;
+    @Autowired
+    private cat_meta_repo catMetaRepository;
 
-@Autowired
-private cat_indicador_repo catIndicadorRepository;
-
-    
+    @Autowired
+    private cat_indicador_repo catIndicadorRepository;
 
     public variables_enty crearVariable(variables_enty variable) {
 
         if (repository.existsByIdA(variable.getIdA())) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "Ya existe una relación de pertinencia registrada para esta variable");
-        }        
-        
+                    "Ya existe una variable registrada con ese idA");
+        }
+
         if (repository.existsByIdSAndIdFuente(variable.getIdS(), variable.getIdFuente())) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "Ya existe una variable con ese ID_S y esa fuente");
+                    "Ya existe una variable con ese id_s y esa fuente");
         }
+
         if (variable.getRevisada() == null) {
             variable.setRevisada(false);
         }
@@ -109,6 +109,14 @@ private cat_indicador_repo catIndicadorRepository;
             variable.setResponsableRevision(null);
         }
 
+        if (variable.getMdea() == null) {
+            variable.setMdea(false);
+        }
+
+        if (variable.getOds() == null) {
+            variable.setOds(false);
+        }
+
         try {
             variables_enty nueva = repository.save(variable);
             System.out.println("Nuevo ID registrado: " + nueva.getIdA());
@@ -116,39 +124,33 @@ private cat_indicador_repo catIndicadorRepository;
         } catch (DataIntegrityViolationException e) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
-                    "Conflicto al guardar la variable (posible duplicado o error de integridad)", e);
+                    "Conflicto al guardar la variable. Revisa duplicados, id_fuente, acrónimo o campos obligatorios.",
+                    e);
         }
     }
-
-    public List<variables_enty> getByResponsableAndFuente(Integer responsableRegister, String idFuente) {
-        return repository.findByResponsableRegisterAndIdFuenteOrderByIdA(responsableRegister,
-                idFuente);
-    }
-
 
     public void deleteByIdA(String idA) {
         if (!repository.existsById(idA)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable no encontrada");
         }
+
         repository.deleteById(idA);
     }
 
     public List<variables_relacion_dto> getWithRelationsByIdS(String idS) {
-    List<variables_enty> variables = repository.findByIdS(idS); // este método debe existir
+        List<variables_enty> variables = repository.findByIdS(idS);
 
-    return variables.stream().map(var -> {
-        variables_relacion_dto dto = new variables_relacion_dto();
-        BeanUtils.copyProperties(var, dto);
+        return variables.stream().map(var -> {
+            variables_relacion_dto dto = new variables_relacion_dto();
+            BeanUtils.copyProperties(var, dto);
 
-        dto.setMdeas(mdeaRepository.findByIdA(var.getIdA()));
-        dto.setOdsList(odsRepository.findByIdA(var.getIdA()));
-        
-        // Este depende si el repo devuelve Optional o List
-        dto.setPertinencia(pertinenciaRepository.findByIdA(var.getIdA()).orElse(null));
+            dto.setMdeas(mdeaRepository.findByIdA(var.getIdA()));
+            dto.setOdsList(odsRepository.findByIdA(var.getIdA()));
+            dto.setPertinencia(pertinenciaRepository.findByIdA(var.getIdA()).orElse(null));
 
-        return dto;
-    }).collect(Collectors.toList());
-}
+            return dto;
+        }).collect(Collectors.toList());
+    }
 
     @Transactional
     public Map<String, Object> deleteVariableAndCascade(String idA) {
@@ -158,12 +160,10 @@ private cat_indicador_repo catIndicadorRepository;
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable no encontrada");
         }
 
-        // Eliminar relaciones por idA
         pertinenciaRepository.deleteByIdA(idA);
         odsRepository.deleteByIdA(idA);
         mdeaRepository.deleteByIdA(idA);
 
-        // Eliminar variable
         repository.deleteById(idA);
 
         Map<String, Object> response = new HashMap<>();
@@ -180,11 +180,9 @@ private cat_indicador_repo catIndicadorRepository;
         variable.setDefinicion(dto.getDefinicion());
         variable.setUrl(dto.getUrl());
         variable.setComentarioS(dto.getComentarioS());
-        variable.setMdea(dto.getMdea());
-        variable.setOds(dto.getOds());
-        variable.setResponsableActualizacion(dto.getResponsableActualizacion());
+        variable.setMdea(Boolean.TRUE.equals(dto.getMdea()));
+        variable.setOds(Boolean.TRUE.equals(dto.getOds()));
 
-        // Lógica para eliminar relaciones si se desactiva MDEA u ODS
         if (!Boolean.TRUE.equals(dto.getMdea())) {
             List<mdea_enty> relacionesMdea = mdeaRepository.findByIdA(idA);
             mdeaRepository.deleteAll(relacionesMdea);
@@ -204,6 +202,7 @@ private cat_indicador_repo catIndicadorRepository;
 
     public variables_relacion_dto getWithRelationsByIdA(String idA) {
         Optional<variables_enty> variableOpt = repository.findById(idA);
+
         if (variableOpt.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable no encontrada");
         }
@@ -225,22 +224,20 @@ private cat_indicador_repo catIndicadorRepository;
                 .comentarioS(variable.getComentarioS())
                 .mdea(variable.getMdea())
                 .ods(variable.getOds())
-                .responsableRegister(variable.getResponsableRegister())
-                .responsableActualizacion(variable.getResponsableActualizacion())
                 .mdeas(mdeas)
                 .odsList(odsList)
                 .pertinencia(pertinenciaOpt.orElse(null))
                 .build();
     }
-    
+
     private Integer parseInteger(String value) {
         try {
-            return (value == null || value.isBlank() || value.equals("-")) ? null : Integer.parseInt(value);
+            return value == null || value.isBlank() || value.equals("-") ? null : Integer.parseInt(value);
         } catch (NumberFormatException e) {
             return null;
         }
     }
-    
+
     private mdea_traduccion_dto traducirMdea(mdea_enty mdea) {
         Integer componenteId = parseInteger(mdea.getComponente());
         Integer subcomponenteUniqueId = parseInteger(mdea.getSubcomponente());
@@ -266,13 +263,13 @@ private cat_indicador_repo catIndicadorRepository;
                         .orElse(null)
                 : null;
 
-        String estadistica1Nombre = (estadistica1UniqueId != null && !estadistica1UniqueId.equals("-"))
+        String estadistica1Nombre = estadistica1UniqueId != null && !estadistica1UniqueId.equals("-")
                 ? catEstadistico1Repository.findByUniqueId(estadistica1UniqueId)
                         .map(e -> e.getNombre())
                         .orElse(null)
                 : null;
 
-        String estadistica2Nombre = (estadistica2UniqueId != null && !estadistica2UniqueId.equals("-"))
+        String estadistica2Nombre = estadistica2UniqueId != null && !estadistica2UniqueId.equals("-")
                 ? catEstadistico2Repository.findByUniqueId(estadistica2UniqueId)
                         .map(e -> e.getNombre())
                         .orElse(null)
@@ -297,7 +294,6 @@ private cat_indicador_repo catIndicadorRepository;
                 .build();
     }
 
-
     private ods_traduccion_dto traducirOds(ods_enty ods) {
         Integer objetivoId = parseInteger(ods.getObjetivo());
         String metaUniqueId = normalizarTexto(ods.getMeta());
@@ -309,13 +305,13 @@ private cat_indicador_repo catIndicadorRepository;
                         .orElse(null)
                 : null;
 
-        String metaNombre = (metaUniqueId != null && !metaUniqueId.equals("-"))
+        String metaNombre = metaUniqueId != null && !metaUniqueId.equals("-")
                 ? catMetaRepository.findByUniqueId(metaUniqueId)
                         .map(m -> m.getMeta())
                         .orElse(null)
                 : null;
 
-        String indicadorNombre = (indicadorUniqueId != null && !indicadorUniqueId.equals("-"))
+        String indicadorNombre = indicadorUniqueId != null && !indicadorUniqueId.equals("-")
                 ? catIndicadorRepository.findByUniqueId(indicadorUniqueId)
                         .map(i -> i.getIndicador())
                         .orElse(null)
@@ -336,17 +332,14 @@ private cat_indicador_repo catIndicadorRepository;
                 .build();
     }
 
-
-
     public List<variable_revision_prioridad_dto> getVariablesByFuentes(List<String> idFuentes) {
-    if (idFuentes == null || idFuentes.isEmpty()) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe proporcionar al menos un id_fuente");
-    }
+        if (idFuentes == null || idFuentes.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe proporcionar al menos un id_fuente");
+        }
 
-    List<variables_enty> variables = repository.findByIdFuenteInOrderByIdFuenteDescIdAAsc(idFuentes);
+        List<variables_enty> variables = repository.findByIdFuenteInOrderByIdFuenteDescIdAAsc(idFuentes);
 
-    return variables.stream().map(var -> {
-        return variable_revision_prioridad_dto.builder()
+        return variables.stream().map(var -> variable_revision_prioridad_dto.builder()
                 .idA(var.getIdA())
                 .idS(var.getIdS())
                 .idFuente(var.getIdFuente())
@@ -357,208 +350,198 @@ private cat_indicador_repo catIndicadorRepository;
                 .prioridad(var.getPrioridad())
                 .revisada(var.getRevisada())
                 .fechaRevision(var.getFechaRevision())
-                .responsableRevision(var.getResponsableRevision())
                 .mdea(var.getMdea())
                 .ods(var.getOds())
                 .mdeas(
-                    mdeaRepository.findByIdA(var.getIdA())
-                        .stream()
-                        .map(this::traducirMdea)
-                        .collect(Collectors.toList())
-                )
+                        mdeaRepository.findByIdA(var.getIdA())
+                                .stream()
+                                .map(this::traducirMdea)
+                                .collect(Collectors.toList()))
                 .odsList(
-                    odsRepository.findByIdA(var.getIdA())
-                        .stream()
-                        .map(this::traducirOds)
-                        .collect(Collectors.toList())
-                )
+                        odsRepository.findByIdA(var.getIdA())
+                                .stream()
+                                .map(this::traducirOds)
+                                .collect(Collectors.toList()))
                 .pertinencia(pertinenciaRepository.findByIdA(var.getIdA()).orElse(null))
-                .build();
-    }).collect(Collectors.toList());
-}
+                .build()).collect(Collectors.toList());
+    }
 
-private String normalizarTexto(String value) {
-    if (value == null)
-        return null;
-    String limpio = value.trim();
-    return limpio.isBlank() ? null : limpio;
-}
+    private String normalizarTexto(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        String limpio = value.trim();
+        return limpio.isBlank() ? null : limpio;
+    }
 
     @Transactional
-public Map<String, Object> actualizarRevisionPrioridad(String idA, variable_revision_update_dto dto) {
-    variables_enty variable = repository.findById(idA)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable no encontrada"));
+    public Map<String, Object> actualizarRevisionPrioridad(String idA, variable_revision_update_dto dto) {
+        variables_enty variable = repository.findById(idA)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable no encontrada"));
 
-    variable.setPrioridad(dto.getPrioridad());
-    variable.setRevisada(dto.getRevisada());
-    variable.setResponsableRevision(dto.getResponsableRevision());
-    variable.setFechaRevision(java.time.LocalDateTime.now());
+        variable.setPrioridad(dto.getPrioridad());
+        variable.setRevisada(dto.getRevisada());
+        variable.setResponsableRevision(dto.getResponsableRevision());
+        variable.setFechaRevision(java.time.LocalDateTime.now());
 
-    repository.save(variable);
+        repository.save(variable);
 
-    Map<String, Object> response = new HashMap<>();
-    response.put("message", "Revisión de prioridad actualizada correctamente");
-    response.put("idA", variable.getIdA());
-    response.put("prioridad", variable.getPrioridad());
-    response.put("revisada", variable.getRevisada());
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Revisión de prioridad actualizada correctamente");
+        response.put("idA", variable.getIdA());
+        response.put("prioridad", variable.getPrioridad());
+        response.put("revisada", variable.getRevisada());
 
-    return response;
-}
+        return response;
+    }
+
     @Transactional
-public Map<String, Object> actualizarRevisionPrioridadMasiva(variable_revision_masiva_update_dto dto) {
-    if (dto.getIdsA() == null || dto.getIdsA().isEmpty()) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe proporcionar al menos un idA");
+    public Map<String, Object> actualizarRevisionPrioridadMasiva(variable_revision_masiva_update_dto dto) {
+        if (dto.getIdsA() == null || dto.getIdsA().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe proporcionar al menos un idA");
+        }
+
+        if (dto.getPrioridad() == null || (dto.getPrioridad() != 1 && dto.getPrioridad() != 2)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La prioridad debe ser 1 o 2");
+        }
+
+        if (dto.getResponsableRevision() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe proporcionar responsableRevision");
+        }
+
+        List<variables_enty> variables = repository.findAllById(dto.getIdsA());
+
+        if (variables.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron variables para actualizar");
+        }
+
+        java.time.LocalDateTime ahora = java.time.LocalDateTime.now();
+
+        for (variables_enty variable : variables) {
+            variable.setPrioridad(dto.getPrioridad());
+            variable.setRevisada(Boolean.TRUE.equals(dto.getRevisada()));
+            variable.setResponsableRevision(dto.getResponsableRevision());
+            variable.setFechaRevision(ahora);
+        }
+
+        repository.saveAll(variables);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Revisión de prioridad masiva actualizada correctamente");
+        response.put("totalActualizadas", variables.size());
+        response.put("prioridad", dto.getPrioridad());
+        response.put("revisada", dto.getRevisada());
+
+        return response;
     }
 
-    if (dto.getPrioridad() == null || (dto.getPrioridad() != 1 && dto.getPrioridad() != 2)) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La prioridad debe ser 1 o 2");
+    public List<variable_tabla_dto> getVariablesTablaByFuentes(List<String> idFuentes) {
+        if (idFuentes == null || idFuentes.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Debe proporcionar al menos un id_fuente");
+        }
+
+        List<variables_enty> variables = repository.findByIdFuenteInOrderByIdFuenteDescIdAAsc(idFuentes);
+
+        return variables.stream()
+                .map(var -> variable_tabla_dto.builder()
+                        .idA(var.getIdA())
+                        .idS(var.getIdS())
+                        .idFuente(var.getIdFuente())
+                        .acronimo(var.getAcronimo())
+                        .nombre(var.getNombre())
+                        .definicion(var.getDefinicion())
+                        .url(var.getUrl())
+                        .comentarioS(var.getComentarioS())
+                        .mdea(var.getMdea())
+                        .ods(var.getOds())
+                        .prioridad(var.getPrioridad())
+                        .revisada(var.getRevisada())
+                        .fechaRevision(var.getFechaRevision())
+                        .responsableRevision(var.getResponsableRevision())
+                        .build())
+                .toList();
     }
 
-    if (dto.getResponsableRevision() == null) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe proporcionar responsableRevision");
+    public Long contarVariables() {
+        return repository.count();
     }
 
-    List<variables_enty> variables = repository.findAllById(dto.getIdsA());
-
-    if (variables.isEmpty()) {
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron variables para actualizar");
+    public Long contarVariablesPrioritarias() {
+        return repository.countByPrioridad(1);
     }
 
-    java.time.LocalDateTime ahora = java.time.LocalDateTime.now();
+    public List<variable_tabla_dto> getVariablesTablaByFuente(String idFuente) {
+        if (idFuente == null || idFuente.isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Debe proporcionar un id_fuente");
+        }
 
-    for (variables_enty variable : variables) {
+        List<variables_enty> variables = repository.findByIdFuente(idFuente);
+
+        return variables.stream()
+                .map(var -> variable_tabla_dto.builder()
+                        .idA(var.getIdA())
+                        .idS(var.getIdS())
+                        .idFuente(var.getIdFuente())
+                        .acronimo(var.getAcronimo())
+                        .nombre(var.getNombre())
+                        .definicion(var.getDefinicion())
+                        .url(var.getUrl())
+                        .comentarioS(var.getComentarioS())
+                        .mdea(var.getMdea())
+                        .ods(var.getOds())
+                        .prioridad(var.getPrioridad())
+                        .revisada(var.getRevisada())
+                        .fechaRevision(var.getFechaRevision())
+                        .responsableRevision(var.getResponsableRevision())
+                        .build())
+                .toList();
+    }
+
+    @Transactional
+    public Map<String, Object> editarVariableBasica(String idA, variables_enty dto) {
+        variables_enty variable = repository.findById(idA)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable no encontrada"));
+
+        variable.setIdS(dto.getIdS());
+        variable.setIdFuente(dto.getIdFuente());
+        variable.setAcronimo(dto.getAcronimo());
+        variable.setNombre(dto.getNombre());
+        variable.setDefinicion(dto.getDefinicion());
+        variable.setUrl(dto.getUrl());
+        variable.setComentarioS(dto.getComentarioS());
+        variable.setMdea(Boolean.TRUE.equals(dto.getMdea()));
+        variable.setOds(Boolean.TRUE.equals(dto.getOds()));
+
         variable.setPrioridad(dto.getPrioridad());
         variable.setRevisada(Boolean.TRUE.equals(dto.getRevisada()));
+        variable.setFechaRevision(dto.getFechaRevision());
         variable.setResponsableRevision(dto.getResponsableRevision());
-        variable.setFechaRevision(ahora);
+
+        repository.save(variable);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Variable actualizada correctamente");
+        response.put("idA", variable.getIdA());
+
+        return response;
     }
 
-    repository.saveAll(variables);
+    @Transactional
+    public Map<String, Object> deleteVariableBasica(String idA) {
+        variables_enty variable = repository.findById(idA)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable no encontrada"));
 
-    Map<String, Object> response = new HashMap<>();
-    response.put("message", "Revisión de prioridad masiva actualizada correctamente");
-    response.put("totalActualizadas", variables.size());
-    response.put("prioridad", dto.getPrioridad());
-    response.put("revisada", dto.getRevisada());
+        repository.delete(variable);
 
-    return response;
-}
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Variable eliminada correctamente");
+        response.put("idA", idA);
 
-public List<variable_tabla_dto> getVariablesTablaByFuentes(List<String> idFuentes) {
-    if (idFuentes == null || idFuentes.isEmpty()) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST,
-            "Debe proporcionar al menos un id_fuente"
-        );
+        return response;
     }
-
-    List<variables_enty> variables = repository.findByIdFuenteInOrderByIdFuenteDescIdAAsc(idFuentes);
-
-    return variables.stream()
-        .map(var -> variable_tabla_dto.builder()
-            .idA(var.getIdA())
-            .idS(var.getIdS())
-            .idFuente(var.getIdFuente())
-            .acronimo(var.getAcronimo())
-            .nombre(var.getNombre())
-            .definicion(var.getDefinicion())
-            .url(var.getUrl())
-            .comentarioS(var.getComentarioS())
-            .mdea(var.getMdea())
-            .ods(var.getOds())
-            .responsableRegister(var.getResponsableRegister())
-            .responsableActualizacion(var.getResponsableActualizacion())
-            .prioridad(var.getPrioridad())
-            .revisada(var.getRevisada())
-            .fechaRevision(var.getFechaRevision())
-            .responsableRevision(var.getResponsableRevision())
-            .build()
-        )
-        .toList();
 }
-    
-public Long contarVariables() {
-    return repository.count();
-}
-
-public Long contarVariablesPrioritarias() {
-    return repository.countByPrioridad((short) 1);
-}
-
-public List<variable_tabla_dto> getVariablesTablaByFuente(String idFuente) {
-    if (idFuente == null || idFuente.isBlank()) {
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Debe proporcionar un id_fuente");
-    }
-
-    List<variables_enty> variables = repository.findByIdFuente(idFuente);
-
-    return variables.stream()
-            .map(var -> variable_tabla_dto.builder()
-                    .idA(var.getIdA())
-                    .idS(var.getIdS())
-                    .idFuente(var.getIdFuente())
-                    .acronimo(var.getAcronimo())
-                    .nombre(var.getNombre())
-                    .definicion(var.getDefinicion())
-                    .url(var.getUrl())
-                    .comentarioS(var.getComentarioS())
-                    .mdea(var.getMdea())
-                    .ods(var.getOds())
-                    .responsableRegister(var.getResponsableRegister())
-                    .responsableActualizacion(var.getResponsableActualizacion())
-                    .prioridad(var.getPrioridad())
-                    .revisada(var.getRevisada())
-                    .fechaRevision(var.getFechaRevision())
-                    .responsableRevision(var.getResponsableRevision())
-                    .build())
-            .toList();
-}
-    
-@Transactional
-public Map<String, Object> editarVariableBasica(String idA, variables_enty dto) {
-    variables_enty variable = repository.findById(idA)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable no encontrada"));
-
-    variable.setIdS(dto.getIdS());
-    variable.setNombre(dto.getNombre());
-    variable.setDefinicion(dto.getDefinicion());
-    variable.setUrl(dto.getUrl());
-    variable.setComentarioS(dto.getComentarioS());
-    variable.setResponsableActualizacion(dto.getResponsableActualizacion());
-
-    // por ahorita mantenemos estas banderas simples
-    variable.setMdea(dto.getMdea());
-    variable.setOds(dto.getOds());
-
-    // si quieres conservarlas fijas en selección:
-    variable.setPrioridad(dto.getPrioridad());
-    variable.setRevisada(dto.getRevisada());
-    variable.setFechaRevision(dto.getFechaRevision());
-    variable.setResponsableRevision(dto.getResponsableRevision());
-
-    repository.save(variable);
-
-    Map<String, Object> response = new HashMap<>();
-    response.put("message", "Variable actualizada correctamente");
-    response.put("idA", variable.getIdA());
-    return response;
-}
-
-@Transactional
-public Map<String, Object> deleteVariableBasica(String idA) {
-    variables_enty variable = repository.findById(idA)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Variable no encontrada"));
-
-    repository.delete(variable);
-
-    Map<String, Object> response = new HashMap<>();
-    response.put("message", "Variable eliminada correctamente");
-    response.put("idA", idA);
-    return response;
-}
-
-}
-
-

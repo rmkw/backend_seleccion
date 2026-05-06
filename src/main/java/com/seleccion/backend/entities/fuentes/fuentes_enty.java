@@ -12,6 +12,9 @@ import lombok.*;
 public class fuentes_enty {
 
     @Id
+    @Column(name = "id_fuente_seleccion", nullable = false)
+    private String idFuenteSeleccion;
+
     @Column(name = "id_fuente", insertable = false, updatable = false)
     private String idFuente;
 
@@ -21,10 +24,10 @@ public class fuentes_enty {
     @Column(name = "fuente", nullable = false)
     private String fuente;
 
-    @Column(name = "url")
+    @Column(name = "url", nullable = false)
     private String url;
 
-    @Column(name = "edicion")
+    @Column(name = "edicion", nullable = false)
     private String edicion;
 
     @Column(name = "comentario_s")
@@ -32,13 +35,4 @@ public class fuentes_enty {
 
     @Column(name = "comentario_a")
     private String comentarioA;
-
-    @Column(name = "responsable_register", nullable = false)
-    private Integer responsableRegister;
-
-    @Column(name = "responsable_actualizacion")
-    private Integer responsableActualizacion;
-
-    @Column(name = "id_fuente_seleccion")
-    private String idFuenteSeleccion;
 }

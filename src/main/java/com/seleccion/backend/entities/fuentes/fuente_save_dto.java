@@ -1,4 +1,5 @@
 package com.seleccion.backend.entities.fuentes;
+
 import lombok.*;
 
 @Data
@@ -6,11 +7,14 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class fuente_save_dto {
+
+    private String idFuenteSeleccion;
+
     private String acronimo;
     private String fuente;
     private String url;
     private String edicion;
+
     private String comentarioS;
     private String comentarioA;
-    private String idFuenteSeleccion;
 }

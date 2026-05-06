@@ -56,7 +56,7 @@ public class variables_ctr {
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("idA"));
-        return repository.findByResponsableRegisterAndIdFuente(responsableRegister, idFuente, pageable);
+        return repository.findByIdFuente(idFuente, pageable);
     }
 
 
