@@ -13,6 +13,7 @@ import com.seleccion.backend.entities.mdea.catalogo.cat_estadistico2_enty;
 import com.seleccion.backend.entities.mdea.catalogo.cat_subcomponente_enty;
 import com.seleccion.backend.entities.mdea.catalogo.cat_tema_enty;
 import com.seleccion.backend.entities.mdea.produccion.mdea_enty;
+import com.seleccion.backend.entities.mdea.produccion.mdea_traduccion_dto;
 import com.seleccion.backend.entities.variables.variables_enty;
 import com.seleccion.backend.repositories.mdea.catalogo.cat_componente_repo;
 import com.seleccion.backend.repositories.mdea.catalogo.cat_estadistico1_repo;
@@ -129,5 +130,144 @@ public class mdea_services {
             });
         }
     }
+
+
+    public List<mdea_traduccion_dto> getTablaByIdA(String idA) {
+    return repo_mdea.findByIdA(idA)
+            .stream()
+            .map(this::traducirRelacionMdea)
+            .toList();
+}
+
+    private mdea_traduccion_dto traducirRelacionMdea(mdea_enty rel) {
+        mdea_traduccion_dto dto = new mdea_traduccion_dto();
+
+        dto.setIdUnique(rel.getIdUnique());
+        dto.setIdA(rel.getIdA());
+        dto.setIdS(rel.getIdS());
+        dto.setContribucion(rel.getContribucion());
+        dto.setComentarioS(rel.getComentarioS());
+
+        traducirComponente(rel, dto);
+        traducirSubcomponente(rel, dto);
+        traducirTema(rel, dto);
+        traducirEstadistica1(rel, dto);
+        traducirEstadistica2(rel, dto);
+
+        return dto;
+    }
+
+    private void traducirComponente(mdea_enty rel, mdea_traduccion_dto dto) {
+        if (rel.getComponente() == null || rel.getComponente().equals("-")) {
+            dto.setComponente("-");
+            dto.setComponenteNombre("-");
+            return;
+        }
+
+        try {
+            Integer idComponente = Integer.valueOf(rel.getComponente());
+
+            repo_comp.findByIdComponente(idComponente).ifPresentOrElse(
+                    comp -> {
+                        dto.setComponente(String.valueOf(comp.getIdComponente()));
+                        dto.setComponenteNombre(comp.getNombre());
+                    },
+                    () -> {
+                        dto.setComponente(rel.getComponente());
+                        dto.setComponenteNombre("-");
+                    });
+        } catch (NumberFormatException e) {
+            dto.setComponente(rel.getComponente());
+            dto.setComponenteNombre("-");
+        }
+    }
+
+    private void traducirSubcomponente(mdea_enty rel, mdea_traduccion_dto dto) {
+        if (rel.getSubcomponente() == null || rel.getSubcomponente().equals("-")) {
+            dto.setSubcomponente("-");
+            dto.setSubcomponenteNombre("-");
+            return;
+        }
+
+        try {
+            Integer uniqueId = Integer.valueOf(rel.getSubcomponente());
+
+            repo_subc.findByUniqueId(uniqueId).ifPresentOrElse(
+                    sub -> {
+                        dto.setSubcomponente(String.valueOf(sub.getIdSubcomponente()));
+                        dto.setSubcomponenteNombre(sub.getNombre());
+                    },
+                    () -> {
+                        dto.setSubcomponente(rel.getSubcomponente());
+                        dto.setSubcomponenteNombre("-");
+                    });
+        } catch (NumberFormatException e) {
+            dto.setSubcomponente(rel.getSubcomponente());
+            dto.setSubcomponenteNombre("-");
+        }
+    }
+
+    private void traducirTema(mdea_enty rel, mdea_traduccion_dto dto) {
+        if (rel.getTema() == null || rel.getTema().equals("-")) {
+            dto.setTema("-");
+            dto.setTemaNombre("-");
+            return;
+        }
+
+        try {
+            Integer uniqueId = Integer.valueOf(rel.getTema());
+
+            repo_tema.findByUniqueId(uniqueId).ifPresentOrElse(
+                    tema -> {
+                        dto.setTema(String.valueOf(tema.getIdTema()));
+                        dto.setTemaNombre(tema.getNombre());
+                    },
+                    () -> {
+                        dto.setTema(rel.getTema());
+                        dto.setTemaNombre("-");
+                    });
+        } catch (NumberFormatException e) {
+            dto.setTema(rel.getTema());
+            dto.setTemaNombre("-");
+        }
+    }
+
+    private void traducirEstadistica1(mdea_enty rel, mdea_traduccion_dto dto) {
+        if (rel.getEstadistica1() == null || rel.getEstadistica1().equals("-")) {
+            dto.setEstadistica1("-");
+            dto.setEstadistica1Nombre("-");
+            return;
+        }
+
+        repo_est1.findByUniqueId(rel.getEstadistica1()).ifPresentOrElse(
+                est -> {
+                    dto.setEstadistica1(est.getIdEstadistico1());
+                    dto.setEstadistica1Nombre(est.getNombre());
+                },
+                () -> {
+                    dto.setEstadistica1(rel.getEstadistica1());
+                    dto.setEstadistica1Nombre("-");
+                });
+    }
+
+    private void traducirEstadistica2(mdea_enty rel, mdea_traduccion_dto dto) {
+        if (rel.getEstadistica2() == null || rel.getEstadistica2().equals("-")) {
+            dto.setEstadistica2("-");
+            dto.setEstadistica2Nombre("-");
+            return;
+        }
+
+        repo_est2.findByUniqueId(rel.getEstadistica2()).ifPresentOrElse(
+                est -> {
+                    dto.setEstadistica2(String.valueOf(est.getIdEstadistico2()));
+                    dto.setEstadistica2Nombre(est.getNombre());
+                },
+                () -> {
+                    dto.setEstadistica2(rel.getEstadistica2());
+                    dto.setEstadistica2Nombre("-");
+                });
+    }
+
+
     
 }

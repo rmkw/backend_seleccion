@@ -19,7 +19,7 @@ import com.seleccion.backend.entities.ods.catalogo.cat_indicador_enty;
 import com.seleccion.backend.entities.ods.catalogo.cat_meta_enty;
 import com.seleccion.backend.entities.ods.catalogo.cat_objetivo_enty;
 import com.seleccion.backend.entities.ods.produccion.ods_enty;
-
+import com.seleccion.backend.entities.ods.produccion.ods_traduccion_dto;
 import com.seleccion.backend.repositories.ods.catalogo.cat_indicador_repo;
 import com.seleccion.backend.repositories.ods.catalogo.cat_meta_repo;
 import com.seleccion.backend.repositories.ods.catalogo.cat_objetivo_repo;
@@ -73,6 +73,11 @@ public class ods_ctr {
         }
     }
 
+    @GetMapping("/tabla/{idA}")
+    public List<ods_traduccion_dto> getTablaPorIdA(@PathVariable String idA) {
+        return service.getTablaByIdA(idA);
+    }
+
 
     @GetMapping("/{IdA}")
     public List<ods_enty> obtenerPorIdA(@PathVariable String IdA) {
@@ -83,4 +88,7 @@ public class ods_ctr {
     public void eliminarRelacion(@PathVariable Integer id) {
         service.deleteById(id);
     }
+
+    
+
 }

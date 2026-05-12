@@ -19,6 +19,7 @@ import com.seleccion.backend.entities.mdea.catalogo.cat_estadistico2_enty;
 import com.seleccion.backend.entities.mdea.catalogo.cat_subcomponente_enty;
 import com.seleccion.backend.entities.mdea.catalogo.cat_tema_enty;
 import com.seleccion.backend.entities.mdea.produccion.mdea_enty;
+import com.seleccion.backend.entities.mdea.produccion.mdea_traduccion_dto;
 import com.seleccion.backend.services.mdea.mdea_services;
 
 import lombok.RequiredArgsConstructor;
@@ -109,5 +110,11 @@ public class mdea_ctr {
     public void eliminarRelacion(@PathVariable Integer id) {
         service.deleteById(id);
     }
+
+    @GetMapping("/tabla/{idA}")
+    public List<mdea_traduccion_dto> getTablaPorIdA(@PathVariable String idA) {
+        return service.getTablaByIdA(idA);
+    }
+
 
 }

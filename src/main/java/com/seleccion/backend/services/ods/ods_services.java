@@ -9,7 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.seleccion.backend.entities.ods.produccion.ods_enty;
+import com.seleccion.backend.entities.ods.produccion.ods_traduccion_dto;
 import com.seleccion.backend.entities.variables.variables_enty;
+import com.seleccion.backend.repositories.ods.catalogo.cat_indicador_repo;
+import com.seleccion.backend.repositories.ods.catalogo.cat_meta_repo;
+import com.seleccion.backend.repositories.ods.catalogo.cat_objetivo_repo;
 import com.seleccion.backend.repositories.ods.produccion.ods_repo;
 import com.seleccion.backend.repositories.variables.variables_repo;
 
@@ -20,6 +24,16 @@ public class ods_services {
 
     @Autowired
     private variables_repo variablesRepository;
+
+    @Autowired
+    private cat_objetivo_repo objetivoRepository;
+
+    @Autowired
+    private cat_meta_repo metaRepository;
+
+    @Autowired
+    private cat_indicador_repo indicadorRepository;
+
 
     @Transactional
     public ods_enty save(ods_enty relacion) {
@@ -79,4 +93,90 @@ public class ods_services {
             });
         }
     }
+
+    public List<ods_traduccion_dto> getTablaByIdA(String idA) {
+        return repository.findByIdA(idA)
+                .stream()
+                .map(this::traducirRelacionOds)
+                .toList();
+    }
+
+    private ods_traduccion_dto traducirRelacionOds(ods_enty rel) {
+        ods_traduccion_dto dto = new ods_traduccion_dto();
+
+        dto.setIdUnique(rel.getIdUnique());
+        dto.setIdA(rel.getIdA());
+        dto.setIdS(rel.getIdS());
+        dto.setContribucion(rel.getContribucion());
+        dto.setComentarioS(rel.getComentarioS());
+
+        traducirObjetivo(rel, dto);
+        traducirMeta(rel, dto);
+        traducirIndicador(rel, dto);
+
+        return dto;
+    }
+    
+    private void traducirObjetivo(ods_enty rel, ods_traduccion_dto dto) {
+        if (rel.getObjetivo() == null || rel.getObjetivo().equals("-")) {
+            dto.setObjetivo("-");
+            dto.setObjetivoNombre("-");
+            return;
+        }
+
+        try {
+            Integer idObjetivo = Integer.valueOf(rel.getObjetivo());
+
+            objetivoRepository.findByIdObjetivo(idObjetivo).ifPresentOrElse(
+                    objetivo -> {
+                        dto.setObjetivo(String.valueOf(objetivo.getIdObjetivo()));
+                        dto.setObjetivoNombre(objetivo.getObjetivo());
+                    },
+                    () -> {
+                        dto.setObjetivo(rel.getObjetivo());
+                        dto.setObjetivoNombre("-");
+                    });
+        } catch (NumberFormatException e) {
+            dto.setObjetivo(rel.getObjetivo());
+            dto.setObjetivoNombre("-");
+        }
+    }
+
+    private void traducirMeta(ods_enty rel, ods_traduccion_dto dto) {
+        if (rel.getMeta() == null || rel.getMeta().equals("-")) {
+            dto.setMeta("-");
+            dto.setMetaNombre("-");
+            return;
+        }
+
+        metaRepository.findByUniqueId(rel.getMeta()).ifPresentOrElse(
+                meta -> {
+                    dto.setMeta(meta.getIdMeta());
+                    dto.setMetaNombre(meta.getMeta());
+                },
+                () -> {
+                    dto.setMeta(rel.getMeta());
+                    dto.setMetaNombre("-");
+                });
+    }
+
+    private void traducirIndicador(ods_enty rel, ods_traduccion_dto dto) {
+        if (rel.getIndicador() == null || rel.getIndicador().equals("-")) {
+            dto.setIndicador("-");
+            dto.setIndicadorNombre("-");
+            return;
+        }
+
+        indicadorRepository.findByUniqueId(rel.getIndicador()).ifPresentOrElse(
+                indicador -> {
+                    dto.setIndicador(String.valueOf(indicador.getIdIndicador()));
+                    dto.setIndicadorNombre(indicador.getIndicador());
+                },
+                () -> {
+                    dto.setIndicador(rel.getIndicador());
+                    dto.setIndicadorNombre("-");
+                });
+    }
+
+
 }
