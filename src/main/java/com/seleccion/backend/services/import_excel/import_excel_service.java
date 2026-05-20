@@ -404,11 +404,18 @@ public class import_excel_service {
                 }
 
                 if (Boolean.TRUE.equals(flagMdea)) {
-                    String componente = clean(blankToNull(getByHeader(row, headerIndex, "componente")));
-                    String subcomponente = clean(blankToNull(getByHeader(row, headerIndex, "subcomponente")));
-                    String tema = clean(blankToNull(getByHeader(row, headerIndex, "tema")));
-                    String estadistica1 = clean(blankToNull(getByHeader(row, headerIndex, "estadistica1")));
-                    String estadistica2 = clean(blankToNull(getByHeader(row, headerIndex, "estadistica2")));
+                    String componente = extractTrailingNumber(
+                            clean(blankToNull(getByHeader(row, headerIndex, "componente"))));
+                    String subcomponente = extractTrailingCodeWithoutDots(
+                            clean(blankToNull(getByHeader(row, headerIndex, "subcomponente"))));
+                    String tema = extractTrailingCodeWithoutDots(
+                            clean(blankToNull(getByHeader(row, headerIndex, "tema"))));
+                    String estadistica1 = buildLetterCode(
+                            tema,
+                            clean(blankToNull(getByHeader(row, headerIndex, "estadistica1"))));
+                    String estadistica2 = buildNumberCode(
+                            estadistica1,
+                            clean(blankToNull(getByHeader(row, headerIndex, "estadistica2"))));
 
                     String key = String.join("|",
                             normalize(idA),
@@ -640,11 +647,18 @@ public class import_excel_service {
 
                 if (Boolean.TRUE.equals(flagMdea)) {
                     try {
-                        String componente = clean(blankToNull(getByHeader(row, headerIndex, "componente")));
-                        String subcomponente = clean(blankToNull(getByHeader(row, headerIndex, "subcomponente")));
-                        String tema = clean(blankToNull(getByHeader(row, headerIndex, "tema")));
-                        String estadistica1 = clean(blankToNull(getByHeader(row, headerIndex, "estadistica1")));
-                        String estadistica2 = clean(blankToNull(getByHeader(row, headerIndex, "estadistica2")));
+                        String componente = extractTrailingNumber(
+                                clean(blankToNull(getByHeader(row, headerIndex, "componente"))));
+                        String subcomponente = extractTrailingCodeWithoutDots(
+                                clean(blankToNull(getByHeader(row, headerIndex, "subcomponente"))));
+                        String tema = extractTrailingCodeWithoutDots(
+                                clean(blankToNull(getByHeader(row, headerIndex, "tema"))));
+                        String estadistica1 = buildLetterCode(
+                                tema,
+                                clean(blankToNull(getByHeader(row, headerIndex, "estadistica1"))));
+                        String estadistica2 = buildNumberCode(
+                                estadistica1,
+                                clean(blankToNull(getByHeader(row, headerIndex, "estadistica2"))));
                         String contribucionMdea = clean(blankToNull(getByHeader(row, headerIndex, "contribucionMdea")));
                         String comentarioSMdea = clean(blankToNull(getByHeader(row, headerIndex, "comentario_sMdea")));
 
@@ -976,4 +990,109 @@ public class import_excel_service {
 
         return s.trim();
     }
+
+    private String extractTrailingNumber(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        String trimmed = value.trim();
+        int underscore = trimmed.lastIndexOf("_");
+
+        if (underscore >= 0 && underscore < trimmed.length() - 1) {
+            String suffix = trimmed.substring(underscore + 1).trim();
+
+            if (suffix.matches("\\d+")) {
+                return suffix;
+            }
+        }
+
+        if (trimmed.matches("\\d+")) {
+            return trimmed;
+        }
+
+        return trimmed;
+    }
+    
+    private String extractTrailingCodeWithoutDots(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        String trimmed = value.trim();
+        int underscore = trimmed.lastIndexOf("_");
+
+        if (underscore >= 0 && underscore < trimmed.length() - 1) {
+            String suffix = trimmed.substring(underscore + 1).trim();
+
+            if (suffix.matches("\\d+(\\.\\d+)*")) {
+                return suffix.replace(".", "");
+            }
+        }
+
+        if (trimmed.matches("\\d+(\\.\\d+)*")) {
+            return trimmed.replace(".", "");
+        }
+
+        return trimmed;
+    }
+    
+    private String buildLetterCode(String parentCode, String value) {
+        if (value == null) {
+            return null;
+        }
+
+        String trimmed = value.trim();
+
+        if (trimmed.isEmpty() || trimmed.equals("-")) {
+            return null;
+        }
+
+        int dotIndex = trimmed.indexOf(".");
+
+        if (dotIndex > 0) {
+            String letter = trimmed.substring(0, dotIndex).trim();
+
+            if (letter.matches("[a-zA-Z]")) {
+                return clean(parentCode) + letter.toLowerCase();
+            }
+        }
+
+        if (trimmed.matches("[a-zA-Z]")) {
+            return clean(parentCode) + trimmed.toLowerCase();
+        }
+
+        return trimmed;
+    }
+
+    private String buildNumberCode(String parentCode, String value) {
+        if (value == null) {
+            return "-";
+        }
+
+        String trimmed = value.trim();
+
+        if (trimmed.isEmpty()
+                || trimmed.equals("-")
+                || trimmed.equalsIgnoreCase("No cuenta con estadístico")) {
+            return "-";
+        }
+
+        int dotIndex = trimmed.indexOf(".");
+
+        if (dotIndex > 0) {
+            String number = trimmed.substring(0, dotIndex).trim();
+
+            if (number.matches("\\d+")) {
+                return isBlank(parentCode) ? number : clean(parentCode) + number;
+            }
+        }
+
+        if (trimmed.matches("\\d+")) {
+            return isBlank(parentCode) ? trimmed : clean(parentCode) + trimmed;
+        }
+
+        return trimmed;
+    }
+
 }
