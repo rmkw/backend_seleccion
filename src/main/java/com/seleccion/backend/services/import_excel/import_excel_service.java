@@ -68,7 +68,7 @@ public class import_excel_service {
     }
 
     private static final List<String> REQUIRED_HEADERS = List.of(
-            "id_fuente", "id_a", "proceso", "acronimo", "metodo", "comentario_sProceso",
+              "proceso", "acronimo", "metodo", "comentario_sProceso",
             "fuente", "url", "urlVariable", "edicion", "comentario_sFuente",
             "id_s", "nombre", "definicion", "comentario_sVariable",
             "mdea", "componente", "subcomponente", "tema", "estadistica1", "estadistica2",
@@ -151,19 +151,18 @@ public class import_excel_service {
 
                 filasConDatos++;
 
-                String idFuenteSeleccion = getByHeader(row, headerIndex, "id_fuente");
-                String idA = getByHeader(row, headerIndex, "id_a");
+                
+                
                 String idS = getByHeader(row, headerIndex, "id_s");
                 String acronimo = getByHeader(row, headerIndex, "acronimo");
+                String fuente = getByHeader(row, headerIndex, "fuente");
+                String edicion = getByHeader(row, headerIndex, "edicion");
+                String url = getByHeader(row, headerIndex, "url");
                 String nombre = getByHeader(row, headerIndex, "nombre");
 
-                if (isBlank(idFuenteSeleccion)) {
-                    errors.add(new import_excel_error_fila_dto(r + 1, "id_fuente", "id_fuente está vacío."));
-                }
+                
 
-                if (isBlank(idA)) {
-                    errors.add(new import_excel_error_fila_dto(r + 1, "id_a", "id_a está vacío."));
-                }
+                
 
                 if (isBlank(idS)) {
                     errors.add(new import_excel_error_fila_dto(r + 1, "id_s", "id_s está vacío."));
@@ -175,6 +174,18 @@ public class import_excel_service {
 
                 if (isBlank(nombre)) {
                     errors.add(new import_excel_error_fila_dto(r + 1, "nombre", "nombre está vacío."));
+                }
+
+                if (isBlank(fuente)) {
+                    errors.add(new import_excel_error_fila_dto(r + 1, "fuente", "fuente está vacío."));
+                }
+
+                if (isBlank(edicion)) {
+                    errors.add(new import_excel_error_fila_dto(r + 1, "edicion", "edicion está vacío."));
+                }
+
+                if (isBlank(url)) {
+                    errors.add(new import_excel_error_fila_dto(r + 1, "url", "url está vacío."));
                 }
             }
 
@@ -296,28 +307,38 @@ public class import_excel_service {
 
                 filasConDatos++;
 
-                String idFuenteSeleccion = getByHeader(row, headerIndex, "id_fuente");
-                String idA = getByHeader(row, headerIndex, "id_a");
+                
+                
                 String idS = getByHeader(row, headerIndex, "id_s");
                 String acronimo = getByHeader(row, headerIndex, "acronimo");
+                
                 String comentarioSProceso = getByHeader(row, headerIndex, "comentario_sProceso");
                 String nombre = getByHeader(row, headerIndex, "nombre");
                 String definicion = getByHeader(row, headerIndex, "definicion");
+                
                 String urlVariable = getByHeader(row, headerIndex, "urlVariable");
                 String comentarioSVariable = getByHeader(row, headerIndex, "comentario_sVariable");
 
                 Boolean flagMdea = parseBoolean(getByHeader(row, headerIndex, "mdea"));
                 Boolean flagOds = parseBoolean(getByHeader(row, headerIndex, "ods"));
 
-                if (isBlank(idFuenteSeleccion)
-                        || isBlank(idA)
-                        || isBlank(idS)
+                String fuenteNombre = getByHeader(row, headerIndex, "fuente");
+                String urlFuente = getByHeader(row, headerIndex, "url");
+                String edicion = getByHeader(row, headerIndex, "edicion");
+
+                String idA = buildIdA(idS, edicion);
+                String idFuenteSeleccion = buildIdFuente(acronimo, fuenteNombre, edicion, urlFuente);
+
+                if (  isBlank(idS)
                         || isBlank(acronimo)
+                        || isBlank(fuenteNombre)
+                        || isBlank(edicion)
+                        || isBlank(urlFuente)
                         || isBlank(nombre)) {
                     errors.add(new import_excel_error_fila_dto(
                             r + 1,
                             "-",
-                            "Fila incompleta. Requiere id_fuente, id_a, id_s, acronimo y nombre."));
+                            "Fila incompleta. Requiere id_s, acronimo y nombre."));
 
                     throw new ImportExcelAbortException(
                             "El archivo tiene filas incompletas. Se canceló la importación.",
@@ -332,9 +353,7 @@ public class import_excel_service {
                                     .build());
                 }
 
-                String fuenteNombre = getByHeader(row, headerIndex, "fuente");
-                String urlFuente = getByHeader(row, headerIndex, "url");
-                String edicion = getByHeader(row, headerIndex, "edicion");
+                
                 String comentarioSFuente = getByHeader(row, headerIndex, "comentario_sFuente");
 
                 fuentes_enty fuente = fuentesPorIdSeleccion.get(idFuenteSeleccion);
@@ -431,9 +450,12 @@ public class import_excel_service {
                 }
 
                 if (Boolean.TRUE.equals(flagOds)) {
-                    String objetivo = clean(blankToNull(getByHeader(row, headerIndex, "objetivo")));
-                    String meta = clean(blankToNull(getByHeader(row, headerIndex, "meta")));
-                    String indicador = clean(blankToNull(getByHeader(row, headerIndex, "indicador")));
+                    String objetivo = extractTrailingNumberOrDash(
+                            clean(blankToNull(getByHeader(row, headerIndex, "objetivo"))));
+                    String meta = extractTrailingCodeWithoutDotsOrDash(
+                            clean(blankToNull(getByHeader(row, headerIndex, "meta"))));
+                    String indicador = extractTrailingCodeWithoutDotsOrDash(
+                            clean(blankToNull(getByHeader(row, headerIndex, "indicador"))));
 
                     String key = String.join("|",
                             normalize(idA),
@@ -639,8 +661,10 @@ public class import_excel_service {
                     continue;
                 }
 
-                String idA = getByHeader(row, headerIndex, "id_a");
+                
                 String idS = getByHeader(row, headerIndex, "id_s");
+                String edicion = getByHeader(row, headerIndex, "edicion");
+                String idA = buildIdA(idS, edicion);
 
                 Boolean flagMdea = parseBoolean(getByHeader(row, headerIndex, "mdea"));
                 Boolean flagOds = parseBoolean(getByHeader(row, headerIndex, "ods"));
@@ -720,9 +744,12 @@ public class import_excel_service {
 
                 if (Boolean.TRUE.equals(flagOds)) {
                     try {
-                        String objetivo = clean(blankToNull(getByHeader(row, headerIndex, "objetivo")));
-                        String meta = clean(blankToNull(getByHeader(row, headerIndex, "meta")));
-                        String indicador = clean(blankToNull(getByHeader(row, headerIndex, "indicador")));
+                        String objetivo = extractTrailingNumberOrDash(
+                                clean(blankToNull(getByHeader(row, headerIndex, "objetivo"))));
+                        String meta = extractTrailingCodeWithoutDotsOrDash(
+                                clean(blankToNull(getByHeader(row, headerIndex, "meta"))));
+                        String indicador = extractTrailingCodeWithoutDotsOrDash(
+                                clean(blankToNull(getByHeader(row, headerIndex, "indicador"))));
                         String contribucionOds = clean(blankToNull(getByHeader(row, headerIndex, "contribucionOds")));
                         String comentarioSOds = clean(blankToNull(getByHeader(row, headerIndex, "comentario_sOds")));
 
@@ -1014,38 +1041,17 @@ public class import_excel_service {
         return trimmed;
     }
     
-    private String extractTrailingCodeWithoutDots(String value) {
-        if (value == null) {
-            return null;
-        }
-
-        String trimmed = value.trim();
-        int underscore = trimmed.lastIndexOf("_");
-
-        if (underscore >= 0 && underscore < trimmed.length() - 1) {
-            String suffix = trimmed.substring(underscore + 1).trim();
-
-            if (suffix.matches("\\d+(\\.\\d+)*")) {
-                return suffix.replace(".", "");
-            }
-        }
-
-        if (trimmed.matches("\\d+(\\.\\d+)*")) {
-            return trimmed.replace(".", "");
-        }
-
-        return trimmed;
-    }
+    
     
     private String buildLetterCode(String parentCode, String value) {
         if (value == null) {
-            return null;
+            return "-";
         }
 
         String trimmed = value.trim();
 
         if (trimmed.isEmpty() || trimmed.equals("-")) {
-            return null;
+            return "-";
         }
 
         int dotIndex = trimmed.indexOf(".");
@@ -1054,12 +1060,12 @@ public class import_excel_service {
             String letter = trimmed.substring(0, dotIndex).trim();
 
             if (letter.matches("[a-zA-Z]")) {
-                return clean(parentCode) + letter.toLowerCase();
+                return isBlank(parentCode) ? letter.toLowerCase() : clean(parentCode) + letter.toLowerCase();
             }
         }
 
         if (trimmed.matches("[a-zA-Z]")) {
-            return clean(parentCode) + trimmed.toLowerCase();
+            return isBlank(parentCode) ? trimmed.toLowerCase() : clean(parentCode) + trimmed.toLowerCase();
         }
 
         return trimmed;
@@ -1094,5 +1100,97 @@ public class import_excel_service {
 
         return trimmed;
     }
+    
+    private String buildIdFuente(String acronimo, String fuente, String edicion, String url) {
+        return clean(acronimo) + "-" + clean(fuente) + "-" + clean(edicion) + "-" + clean(url);
+    }
 
+    private String buildIdA(String idS, String edicion) {
+        return clean(idS) + "-" + clean(edicion);
+    }
+    
+    
+    
+    
+    
+    
+
+    
+
+    private String extractTrailingNumberOrDash(String value) {
+        if (value == null) {
+            return "-";
+        }
+
+        String trimmed = value.trim();
+
+        if (trimmed.isEmpty() || trimmed.equals("-")) {
+            return "-";
+        }
+
+        String code = extractTrailingNumericCode(trimmed);
+
+        if (code != null && code.matches("\\d+")) {
+            return code;
+        }
+
+        return trimmed;
+    }
+
+    
+
+    private String extractTrailingNumericCode(String value) {
+        String trimmed = value.trim();
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+                .compile("(\\d+(?:\\.\\d+)*)\\s*$")
+                .matcher(trimmed);
+
+        return matcher.find() ? matcher.group(1) : null;
+    }
+
+    
+    
+    private String extractTrailingCodeWithoutDots(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        String code = extractTrailingAlphanumericCode(value);
+
+        if (code != null) {
+            return code.replace(".", "").toLowerCase();
+        }
+
+        return value.trim();
+    }
+
+    private String extractTrailingCodeWithoutDotsOrDash(String value) {
+        if (value == null) {
+            return "-";
+        }
+
+        String trimmed = value.trim();
+
+        if (trimmed.isEmpty() || trimmed.equals("-")) {
+            return "-";
+        }
+
+        String code = extractTrailingAlphanumericCode(trimmed);
+
+        if (code != null) {
+            return code.replace(".", "").toLowerCase();
+        }
+
+        return trimmed;
+    }
+
+    private String extractTrailingAlphanumericCode(String value) {
+        String trimmed = value.trim();
+
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+                .compile("(\\d+(?:\\.[a-zA-Z0-9]+)*)\\s*$")
+                .matcher(trimmed);
+
+        return matcher.find() ? matcher.group(1) : null;
+    }
 }
